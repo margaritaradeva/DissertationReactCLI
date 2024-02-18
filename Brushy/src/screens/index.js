@@ -10,6 +10,7 @@ import Search from './Search';
 import LoadingScreen from './LoadingScreen';
 import Friends from './Friends';
 import Settings from './Settings';
+import Home from './Home';
 
 export {
   HomeScreen,
@@ -21,5 +22,6 @@ export {
   Message,
   Search,
   Friends,
-  Settings
+  Settings,
+  Home
 };
