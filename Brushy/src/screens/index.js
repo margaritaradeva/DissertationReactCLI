@@ -8,6 +8,8 @@ import SignUp from './SignUp';
 import Message from './Message';
 import Search from './Search';
 import LoadingScreen from './LoadingScreen';
+import Friends from './Friends';
+import Settings from './Settings';
 
 export {
   HomeScreen,
@@ -17,5 +19,7 @@ export {
   SignIn,
   SignUp,
   Message,
-  Search
+  Search,
+  Friends,
+  Settings
 };

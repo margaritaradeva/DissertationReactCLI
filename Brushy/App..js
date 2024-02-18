@@ -38,7 +38,10 @@ function MainStack() {
       {/* NavigationContainer - main container, necessary to put all tabs working together */}
       <NavigationContainer>
         {/* Tab.Navigator - tell the app what the navigation structure of the bottom tabs is */}
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: 'pink',
+          }}>
           {/* Tab.Screen - defines each individual tab item which directs the user to a screen */}
           <Tab.Screen
             name="Home"
