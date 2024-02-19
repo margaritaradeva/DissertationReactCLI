@@ -6,12 +6,19 @@ import { Input } from '../components';
 
 
 export default function SignUp({navigation}) {
+    function onSignUp() {
+        console.log('on sign UP')
+       };
     return (
       <View style={styles.container}>
-        <Text>Sign in!</Text>
+        <Text>Sign Up!</Text>
         <Input title='Username'/>
+        <Input title='Email'/>
+        <Input title='First Name'/>
+        <Input title='Last Name'/>
         <Input title='Password'/>
-        <CustomButton title='Sign Up'/>
+        <Input title='Repeat Password'/>
+        <CustomButton title='Sign Up' onPress={onSignUp}/>
         <Text>Already have an account?</Text>
         <CustomButton title='Sign In' onPress={()=>navigation.navigate('Sign In')}/>
       </View>
