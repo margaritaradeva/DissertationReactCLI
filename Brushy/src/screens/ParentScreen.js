@@ -1,17 +1,43 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import React from 'react';
+import { List } from 'react-native-paper';
 
-export default function ParentScreen() {
+
+
+export default function ParentScreen({ navigation }) {
     return (
       <View style={styles.container}>
-        <Text>Parents!</Text>
+        <List.Section>
+          <List.Item
+            title = "Add Friends"
+            left={()=> <List.Icon icon="account-plus"/>}
+            onPress={() => navigation.navigate('Add Friends')}
+        />
+        <List.Item
+            title = "Friends"
+            left={()=> <List.Icon icon="account-group"/>}
+            onPress={() => navigation.navigate('Friends')}
+        />
+        <List.Item
+            title = "Statistics"
+            left={()=> <List.Icon icon="chart-bar"/>}
+            onPress={() => navigation.navigate('Statistics')}
+        />
+        <List.Item
+            title = "Settings"
+            left={()=> <List.Icon icon="cog"/>}
+            onPress={() => navigation.navigate('Settings')}
+        />
+        </List.Section>
       </View>
     );
   }
 
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    cotainer: {
+      flex: 1,
+    },
+
 });

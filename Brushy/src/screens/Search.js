@@ -1,19 +1,17 @@
-import { SafeAreaView, Text } from "react-native-safe-area-context"
+import { StyleSheet, Text, View } from 'react-native';
 
-
-function Search(){
-
-
-    return  (
-        <SafeAreaView>
-            <Text>
-                Search
-            </Text>
-        </SafeAreaView>
+export default function SiSearchgnIn() {
+    return (
+      <View style={styles.container}>
+        <Text>Seatch in!</Text>
+      </View>
     );
+  }
 
-
-
-}
-
-export default Search
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });

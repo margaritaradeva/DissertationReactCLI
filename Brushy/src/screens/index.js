@@ -11,6 +11,9 @@ import LoadingScreen from './LoadingScreen';
 import Friends from './Friends';
 import Settings from './Settings';
 import Home from './Home';
+import  Statistics from './Statistics';
+import ParentNav from './ParentNav';
+
 
 export {
   HomeScreen,
@@ -23,5 +26,7 @@ export {
   Search,
   Friends,
   Settings,
-  Home
+  Home,
+  Statistics,
+  ParentNav
 };

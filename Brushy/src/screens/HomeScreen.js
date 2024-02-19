@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Home from './Home';
 import RewardsScreen from './RewardsScreen';
 import ParentScreen from './ParentScreen';
+import ParentNav from './ParentNav';
 // Create the bottom tab navigator (menu) 
 // Docs available at https://reactnavigation.org/docs/material-bottom-tab-navigator
 const Tab = createMaterialBottomTabNavigator();
@@ -21,7 +22,7 @@ export default function HomeScreen() {
           }}>
           {/* Tab.Screen - defines each individual tab item which directs the user to a screen */}
           <Tab.Screen
-            name="Homee"
+            name="Home"
             component={Home}
             options={{
               tabBarIcon: ({ color }) => (
@@ -40,7 +41,7 @@ export default function HomeScreen() {
           />
           <Tab.Screen
             name="Parents"
-            component={ParentScreen}
+            component={ParentNav}
             options={{
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="account-switch-outline" color={color} size={26} />
