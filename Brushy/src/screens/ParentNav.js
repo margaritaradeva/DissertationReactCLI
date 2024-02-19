@@ -17,7 +17,7 @@ export default function ParentNav() {
         headerLeft: () => (
           <Image
                 source={profile}
-                style={{width:40, height:40, marginRight:10}}
+                style={{width:40, height:40, marginRight:10, borderRadius:26}}
                 resizeMode='contain'/>
         ),
       }}/>

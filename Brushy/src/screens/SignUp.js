@@ -1,19 +1,27 @@
-import { SafeAreaView, Text } from "react-native-safe-area-context"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import CustomButton from '../components/CustomButton';
+import { Input } from '../components';
 
 
-function SignUp(){
 
 
-    return  (
-        <SafeAreaView>
-            <Text>
-                Sign Up
-            </Text>
-        </SafeAreaView>
+export default function SignUp({navigation}) {
+    return (
+      <View style={styles.container}>
+        <Text>Sign in!</Text>
+        <Input title='Username'/>
+        <Input title='Password'/>
+        <CustomButton title='Sign Up'/>
+        <Text>Already have an account?</Text>
+        <CustomButton title='Sign In' onPress={()=>navigation.navigate('Sign In')}/>
+      </View>
     );
+  }
 
-
-
-}
-
-export default SignUp
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
