@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 
@@ -24,38 +24,122 @@ export default function SignUp({navigation}) {
     const [lastNameError, setLastNameError] = useState('');
     const [repeatedPasswordError, setRepeatedPasswordError] = useState('');
 
+    const [passwordFeedback, setPasswordFeedback] = useState('');
+    const [passwordStrength, setPasswordStrength] = useState('');
+
+    const hasUpper = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+    useEffect (() => {
+        updatePasswordFeedback(password);
+    }, [password]);
+
+    const updatePasswordFeedback(password) {
+        let feedback = [];
+        let strength = 0;
+
+        if (password.length >=8) {
+            strength++;
+        }else {
+            feedback.push('Password must be at least 8 characters long');
+
+        }
+        if (hasNumber) {
+            strength++;
+        }else {
+            feedback.push('Include at least one number');
+        }
+        if (hasSpecial) {
+            strength++;
+        }else {
+            feedback.push('Use at least one special character');
+        }
+        if (hasUpper){
+            strength++;
+        }else {
+            feedback.push('Add at least one uppercase letter');
+        }
+
+        setPasswordFeedback(feedback);
+
+        switch (strength) {
+            case 1:
+                setPasswordStrength('Weak');
+                break;
+            case 2:
+                setPasswordStrength('Moderate');
+                break;
+            case 3:
+                setPasswordStrength('Strong');
+                break;
+            case 4:
+                setPasswordStrength('Very Strong');
+                break;
+            default:
+                setPasswordStrength('Very weak');
+                break;
+        }
+
+    }
+
     function onSignUp() {
         console.log('on sign upppppp',username,password)
     //Check username
     const noUsername = !username
-    if (noUsername) {
-      setUsernameError('Username not provided')
+    if (noUsername || username.length<6) {
+      setUsernameError('Username must be longer than 5 characters')
     }
     //check email
+    
     const noEmail = !email 
     if (noEmail) {
         setEmailError('Email not provided')
-
+ 
+    } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setEmailError('Please enter a valid email address')
+        } else {
+            setEmailError('') // clear any previous errors if the email is now valid
+        }
     }
     //check First Name
     const noFirstName = !firstName
     if (noFirstName) {
-        setFirstNameError('No First Name provided')
+        setFirstNameError('Please enter your first name')
 
     }
     //check Last name
     const noLastName = !lastName
     if (noLastName) {
-        setLastNameError('No Last Name Provided')
+        setLastNameError('Please enter your last name')
     }
-    //check password
+    //check password-len 8, uppercase, special char and num
     const noPassword = !password
-    if (noPassword) {
-      setPasswordError('Password not provided')
+    if (noPassword || password.length <8 ) {
+      setPasswordError('Password must be at least 8 characters long')
+    } else {
+        
+
+        if (!hasUpper){
+            setPasswordError('Password must contain at least one uppercase letter');
+
+        } else if (!hasNumber) {
+            setPasswordError('Password must contain at least one number');
+        } else if (!hasSpecial){
+            setPasswordError('Password must contain at least one special character')
+        }else {
+            setPasswordError(''); // clear any previous error
+        }
+
     }
+
+
+
+
     const noRepeatedPassword = !repeatedPassword
     if (noRepeatedPassword) {
-        setRepeatedPasswordError('Password not provided')
+        setRepeatedPasswordError('Please  confirm your password')
     }
     if (password != repeatedPassword){
         setRepeatedPasswordError('Passwords do not match')
@@ -96,6 +180,11 @@ export default function SignUp({navigation}) {
         error={passwordError}
         setValue={setPassword}
         setError={setPasswordError}/>
+
+        {passwordFeedback.localeCompare((item,index) => (
+            <Text
+        ))}
+
         <Input title='Repeat Password'
         value={repeatedPassword}
         error={repeatedPasswordError}
