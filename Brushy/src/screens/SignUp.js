@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View} from 'react-native';
+import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useEffect, useState } from 'react';
@@ -174,6 +174,8 @@ export default function SignUp({navigation}) {
    };
        
     return (
+        <SafeAreaView style={{flex:1}}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Text>Sign Up!</Text>
         <Input title='Username'
@@ -225,7 +227,8 @@ export default function SignUp({navigation}) {
         <CustomButton title='Sign Up' onPress={onSignUp}/>
         <Text>Already have an account?</Text>
         <CustomButton title='Sign In' onPress={()=>navigation.navigate('Sign In')}/>
-      </View>
+      </View></TouchableWithoutFeedback>
+      </SafeAreaView>
     );
   }
 
