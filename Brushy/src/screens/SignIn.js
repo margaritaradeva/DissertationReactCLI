@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useState } from 'react';
@@ -33,8 +33,13 @@ export default function SignIn({navigation}) {
     //make sign in request
    };
     return (
+      // FIX SCROLL VIEW!!!!
       <SafeAreaView style={{flex:1}}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex:1}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView 
+            showsVerticalScrollIndicator={false}
+            style={{flex: 1}}>
       <View style={styles.container}>
         <Text>Sign in!</Text>
         <Input title='Username'
@@ -58,8 +63,10 @@ export default function SignIn({navigation}) {
         <CustomButton title='Log In' onPress={onSignIn}/>
         <Text>Don't have an account?</Text>
         <CustomButton title='Sign Up' onPress={() => navigation.navigate('Sign Up')}/>
-      </View>
+        </View>
+      </ScrollView>
       </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -69,6 +76,9 @@ export default function SignIn({navigation}) {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      alignContent:'center',
+      paddingTop: '50%',
+      paddingBottom: '50%',
     },
     toggleContainer: {
         flexDirection: 'row',

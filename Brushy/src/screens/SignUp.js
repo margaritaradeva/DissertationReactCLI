@@ -1,9 +1,8 @@
-import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import { Keyboard, SafeAreaView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View, KeyboardAvoidingView, ScrollView} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useEffect, useState } from 'react';
 import { Switch } from 'react-native-paper';
-
 
 
 
@@ -175,7 +174,11 @@ export default function SignUp({navigation}) {
        
     return (
         <SafeAreaView style={{flex:1}}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex:1}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView 
+            showsVerticalScrollIndicator={false}
+            style={{flex: 1}}>
       <View style={styles.container}>
         <Text>Sign Up!</Text>
         <Input title='Username'
@@ -227,7 +230,10 @@ export default function SignUp({navigation}) {
         <CustomButton title='Sign Up' onPress={onSignUp}/>
         <Text>Already have an account?</Text>
         <CustomButton title='Sign In' onPress={()=>navigation.navigate('Sign In')}/>
-      </View></TouchableWithoutFeedback>
+      </View>
+      </ScrollView>
+      </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -237,6 +243,7 @@ export default function SignUp({navigation}) {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      paddingTop:'20%',
     },
     toggleContainer: {
         flexDirection: 'row',
