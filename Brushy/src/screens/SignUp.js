@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useEffect, useState } from 'react';
@@ -88,9 +88,12 @@ export default function SignUp({navigation}) {
         console.log('on sign upppppp',username,password)
     //Check username
     const noUsername = !username
+    const usernameHasSpecial = /[^A-Za-z0-9_.]/.test(username);
     if (noUsername || username.length<6) {
       setUsernameError('Username must be longer than 5 characters')
-    }
+    } else if (usernameHasSpecial) {
+        setUsernameError('Username must not contain any special characters');
+    } 
     //check email
     
     const noEmail = !email 
@@ -130,6 +133,8 @@ export default function SignUp({navigation}) {
             setPasswordError('Password must contain at least one number');
         } else if (!hasSpecial){
             setPasswordError('Password must contain at least one special character')
+        } else if (password.length>30) {
+            setPasswordError('Password must be no longer than 35 characters');
         }else {
             setPasswordError(''); // clear any previous error
         }
