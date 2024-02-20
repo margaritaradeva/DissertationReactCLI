@@ -24,17 +24,19 @@ export default function SignUp({navigation}) {
     const [lastNameError, setLastNameError] = useState('');
     const [repeatedPasswordError, setRepeatedPasswordError] = useState('');
 
-    const [passwordFeedback, setPasswordFeedback] = useState('');
-    const [passwordStrength, setPasswordStrength] = useState('');
+    const [passwordFeedback, setPasswordFeedback] = useState([]);
+    const [passwordStrength, setPasswordStrength] = useState('Very weak');
 
     const hasUpper = /[A-Z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+    
     useEffect (() => {
         updatePasswordFeedback(password);
     }, [password]);
 
-    const updatePasswordFeedback(password) {
+    function updatePasswordFeedback(password) {
         let feedback = [];
         let strength = 0;
 
@@ -80,7 +82,7 @@ export default function SignUp({navigation}) {
                 break;
         }
 
-    }
+    };
 
     function onSignUp() {
         console.log('on sign upppppp',username,password)
@@ -181,10 +183,12 @@ export default function SignUp({navigation}) {
         setValue={setPassword}
         setError={setPasswordError}/>
 
-        {passwordFeedback.localeCompare((item,index) => (
-            <Text
+        {passwordFeedback.map((item,index) => (
+            <Text key={index}>{item}</Text>
+            
+        
         ))}
-
+        <Text>Password strength: {passwordStrength}</Text>
         <Input title='Repeat Password'
         value={repeatedPassword}
         error={repeatedPasswordError}
