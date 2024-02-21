@@ -3,7 +3,7 @@ import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useState } from 'react';
 import { Switch } from 'react-native-paper';
-
+import api from '../core/api';
 
 
 
@@ -31,6 +31,35 @@ export default function SignIn({navigation}) {
       return
     }
     //make sign in request
+    api({
+      method: 'POST',
+      url: '/application/signin/',
+      data: {
+        username: username,
+        password: password
+      }
+
+    })
+    .then(response => {
+      console.log('Sign In', response);
+    })
+    // from Axios.com
+    .catch(error => {
+      console.log('Error');
+      if (error.response) {
+        console.log('Error1');
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.reasponse.headers);
+
+      } else if (error.request) {
+        console.log('Error2');
+        console.log(error.config);
+      } else {
+        console.log('Error3', error.message);
+      }
+      console.log(error.config);
+    });
    };
     return (
       // FIX SCROLL VIEW!!!!
