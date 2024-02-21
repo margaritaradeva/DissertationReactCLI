@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Switch } from 'react-native-paper';
 import api from '../core/api';
 import utils from '../core/utils';
+import useGlobally from '../core/global';
 
 
 export default function SignIn({navigation}) {
@@ -13,6 +14,8 @@ export default function SignIn({navigation}) {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [seePassword, setSeePassword] = useState(false);
+
+  const login = useGlobally(state => state.login);
 
   function onSignIn() {
     console.log('on sign in',username,password)
@@ -42,7 +45,8 @@ export default function SignIn({navigation}) {
     })
     .then(response => {
       utils.log('Sign In', response.data);
-      props.onAuthenticated();
+      login(response.data)
+
     })
     // from Axios.com
     .catch(error => {

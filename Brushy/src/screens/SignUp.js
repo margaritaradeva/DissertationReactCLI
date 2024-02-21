@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
 import { Switch } from 'react-native-paper';
 import api from '../core/api';
 import utils from '../core/utils';
+import useGlobally from '../core/global';
 
 export default function SignUp({navigation}) {
+    const login = useGlobally(state => state.login)
 
     const [username, setUsername] = useState('');
     const [email, setEmail] =useState('');
@@ -184,7 +186,7 @@ export default function SignUp({navigation}) {
       })
       .then(response => {
         utils.log('Sign Up', response.data);
-        props.onAuthenticated();
+        login(response.data);
       })
       // from Axios.com
       .catch(error => {

@@ -2,6 +2,8 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native'; //
 import { HomeScreen, SignIn, SignUp, LoadingScreen, Friends, Search, Statistics, Settings } from './src/screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
+import useGlobally from './src/core/global';
+
 
 // Create a stack navigator for the signIn/logIn screens
 const Stack =  createNativeStackNavigator();
@@ -16,7 +18,9 @@ const AppTheme = {
 
 export default function App() {
     const [initialised, setInitialised] = useState(true); // Initial Login animation
-    const [authenticated, setAuthenticated] = useState(false); // For authentication
+   
+
+    const authenticated = useGlobally(state => state.authenticated)
     return (
         <NavigationContainer theme={AppTheme}>
             <Stack.Navigator>
