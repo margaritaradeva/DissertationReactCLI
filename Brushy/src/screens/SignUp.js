@@ -3,8 +3,8 @@ import CustomButton from '../components/CustomButton';
 import { Input } from '../components';
 import { useEffect, useState } from 'react';
 import { Switch } from 'react-native-paper';
-
-
+import api from '../core/api';
+import utils from '../core/utils';
 
 export default function SignUp({navigation}) {
 
@@ -170,6 +170,39 @@ export default function SignUp({navigation}) {
     //break out of this function if there were any issues
     if (validationIssues) {return}
     //make sign in request
+    api({
+        method: 'POST',
+        url: '/application/signup/',
+        data: {
+          username: username,
+          email: email,
+          first_name: firstName,
+          last_name: lastName,
+          password: password
+        }
+  
+      })
+      .then(response => {
+        utils.log('Sign Up', response.data);
+        props.onAuthenticated();
+      })
+      // from Axios.com
+      .catch(error => {
+        console.log('Error');
+        if (error.response) {
+          console.log('Error1');
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.reasponse.headers);
+  
+        } else if (error.request) {
+          console.log('Error2');
+          console.log(error.config);
+        } else {
+          console.log('Error3', error.message);
+        }
+        console.log(error.config);
+      });
    };
        
     return (

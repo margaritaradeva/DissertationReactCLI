@@ -4,7 +4,7 @@ import { Input } from '../components';
 import { useState } from 'react';
 import { Switch } from 'react-native-paper';
 import api from '../core/api';
-
+import utils from '../core/utils';
 
 
 export default function SignIn({navigation}) {
@@ -41,7 +41,8 @@ export default function SignIn({navigation}) {
 
     })
     .then(response => {
-      console.log('Sign In', response);
+      utils.log('Sign In', response.data);
+      props.onAuthenticated();
     })
     // from Axios.com
     .catch(error => {

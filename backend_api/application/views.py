@@ -4,12 +4,24 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SignUpSerializer
 # Create your views here.
 from django.http import HttpResponse
 
 def home_view(request):
     return HttpResponse("Welcome to the home page!")
+
+def get_auth_for_user(user):
+    tokens = RefreshToken.for_user(user)
+    return {
+        'user': UserSerializer(user).data,
+        'tokens': {
+            'access': str(tokens.access_token),
+            'refresh': str(tokens)
+        }
+        
+    }
+
 
 class SignInView(APIView):
     permission_classes = [AllowAny]
@@ -17,14 +29,26 @@ class SignInView(APIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
+        
+        if not username or not password:
+            return Response(status=400)
         user = authenticate(username=username, password=password)
-        if user:
-            # Assuming you want to return the user data and tokens
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'user': UserSerializer(user).data
-            })
-        else:
-            return Response({"detail": "Invalid credentials"}, status=401)
+        if not user:
+            return Response(status=401)
+        user_data = get_auth_for_user(user)
+
+        return Response(user_data)
+        
+
+class SignUpView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        new_user = SignUpSerializer(data=request.data)
+        new_user.is_valid(raise_exception=True)
+        user = new_user.save()
+        
+        user_data = get_auth_for_user(user)
+
+        return Response(user_data)
+        
