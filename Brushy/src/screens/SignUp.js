@@ -185,8 +185,12 @@ export default function SignUp({navigation}) {
   
       })
       .then(response => {
+        const credentials ={
+            username:username,
+            password:password
+        }
         utils.log('Sign Up', response.data);
-        login(response.data);
+        login(credentials, response.data.user);
       })
       // from Axios.com
       .catch(error => {

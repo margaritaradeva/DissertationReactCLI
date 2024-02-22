@@ -44,8 +44,12 @@ export default function SignIn({navigation}) {
 
     })
     .then(response => {
+      const credentials = {
+        username: username,
+        password: password
+      }
       utils.log('Sign In', response.data);
-      login(response.data)
+      login(credentials, response.data.user)
 
     })
     // from Axios.com
