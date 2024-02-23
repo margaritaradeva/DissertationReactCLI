@@ -17,10 +17,16 @@ const AppTheme = {
 }
 
 export default function App() {
-    const [initialised, setInitialised] = useState(true); // Initial Login animation
+    const initialised = useGlobally(state => state.initialised);
    
 
-    const authenticated = useGlobally(state => state.authenticated)
+    const authenticated = useGlobally(state => state.authenticated);
+
+    const init = useGlobally(state => state.init);
+
+    useEffect(() => {
+        init();
+    },[])
     return (
         <NavigationContainer theme={AppTheme}>
             <Stack.Navigator>

@@ -6,6 +6,7 @@ INJECTED from C:\University\Project\CLIversion\Brushy\android\app\src\debug\Andr
 INJECTED from C:\University\Project\CLIversion\Brushy\android\app\src\debug\AndroidManifest.xml:2:1-9:12
 INJECTED from C:\University\Project\CLIversion\Brushy\android\app\src\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.react:flipper-integration:0.73.4] C:\Users\Lenovo\.gradle\caches\transforms-3\1af6da98205d2b9904caa399785386e9\transformed\jetified-flipper-integration-0.73.4-debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-encrypted-storage] C:\University\Project\CLIversion\Brushy\node_modules\react-native-encrypted-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-8:12
 MERGED from [:react-native-safe-area-context] C:\University\Project\CLIversion\Brushy\node_modules\react-native-safe-area-context\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-screens] C:\University\Project\CLIversion\Brushy\node_modules\react-native-screens\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-vector-icons] C:\University\Project\CLIversion\Brushy\node_modules\react-native-vector-icons\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
@@ -50,6 +51,7 @@ MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Lenovo\.gradle\caches\transf
 MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\Lenovo\.gradle\caches\transforms-3\71b91ea8216105cda74b0317da307340\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:17:1-37:12
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Lenovo\.gradle\caches\transforms-3\57875db857c52963776a564122dcb84b\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
 MERGED from [androidx.tracing:tracing:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\1b375b5e368b03c6f05fa335182ca0d8\transformed\jetified-tracing-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.security:security-crypto:1.1.0-alpha03] C:\Users\Lenovo\.gradle\caches\transforms-3\81299722c5030d8109decd57e24e4d80\transformed\jetified-security-crypto-1.1.0-alpha03\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\Lenovo\.gradle\caches\transforms-3\f1ad4007c9d50652fdaa15828c92907b\transformed\coordinatorlayout-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.autofill:autofill:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\38344280fe9342d918737701bd2e1811\transformed\jetified-autofill-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\27f32e5559bcd43034d6914ede1dc092\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -177,6 +179,8 @@ INJECTED from C:\University\Project\CLIversion\Brushy\android\app\src\debug\Andr
 INJECTED from C:\University\Project\CLIversion\Brushy\android\app\src\debug\AndroidManifest.xml
 MERGED from [com.facebook.react:flipper-integration:0.73.4] C:\Users\Lenovo\.gradle\caches\transforms-3\1af6da98205d2b9904caa399785386e9\transformed\jetified-flipper-integration-0.73.4-debug\AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.react:flipper-integration:0.73.4] C:\Users\Lenovo\.gradle\caches\transforms-3\1af6da98205d2b9904caa399785386e9\transformed\jetified-flipper-integration-0.73.4-debug\AndroidManifest.xml:5:5-44
+MERGED from [:react-native-encrypted-storage] C:\University\Project\CLIversion\Brushy\node_modules\react-native-encrypted-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:6:5-44
+MERGED from [:react-native-encrypted-storage] C:\University\Project\CLIversion\Brushy\node_modules\react-native-encrypted-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:6:5-44
 MERGED from [:react-native-safe-area-context] C:\University\Project\CLIversion\Brushy\node_modules\react-native-safe-area-context\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-safe-area-context] C:\University\Project\CLIversion\Brushy\node_modules\react-native-safe-area-context\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-screens] C:\University\Project\CLIversion\Brushy\node_modules\react-native-screens\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
@@ -265,6 +269,8 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Lenovo\.gradle\cac
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Lenovo\.gradle\caches\transforms-3\57875db857c52963776a564122dcb84b\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
 MERGED from [androidx.tracing:tracing:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\1b375b5e368b03c6f05fa335182ca0d8\transformed\jetified-tracing-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.tracing:tracing:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\1b375b5e368b03c6f05fa335182ca0d8\transformed\jetified-tracing-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.security:security-crypto:1.1.0-alpha03] C:\Users\Lenovo\.gradle\caches\transforms-3\81299722c5030d8109decd57e24e4d80\transformed\jetified-security-crypto-1.1.0-alpha03\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.security:security-crypto:1.1.0-alpha03] C:\Users\Lenovo\.gradle\caches\transforms-3\81299722c5030d8109decd57e24e4d80\transformed\jetified-security-crypto-1.1.0-alpha03\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\Lenovo\.gradle\caches\transforms-3\f1ad4007c9d50652fdaa15828c92907b\transformed\coordinatorlayout-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\Lenovo\.gradle\caches\transforms-3\f1ad4007c9d50652fdaa15828c92907b\transformed\coordinatorlayout-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.autofill:autofill:1.1.0] C:\Users\Lenovo\.gradle\caches\transforms-3\38344280fe9342d918737701bd2e1811\transformed\jetified-autofill-1.1.0\AndroidManifest.xml:20:5-22:41
