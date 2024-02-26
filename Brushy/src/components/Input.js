@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Platform } from "react-native";
 
 export default function Input ({title, value,error, setValue,setError, secureTextEntry=false}) {
     return (
@@ -11,8 +11,14 @@ export default function Input ({title, value,error, setValue,setError, secureTex
         autoComplete="off"
         secureTextEntry={secureTextEntry} 
         style={{backgroundColor:'white',
+        height: Platform.OS == 'android' ? 40 : 20,
+        paddingVertical: 0,
         borderColor: error ? 'red' : 'green',
+        underlineColorAndroid:"transparent",
         borderWidth:3,
+        fontSize: 14,
+  lineHeight: 14 ,
+        placeholderTextColor:'#000000',
         borderRadius: 26, height:52, width:'100%',
          paddingHorizontal:16,fontSize:16}}
          value={value}

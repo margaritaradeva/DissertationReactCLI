@@ -86,6 +86,7 @@ export default function SignIn({navigation}) {
         setValue={setUsername}
         setError={setUsernameError}
         />
+          
         <Input title='Password'
         value={password}
         error={passwordError}
