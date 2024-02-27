@@ -1,9 +1,10 @@
+// Import all the necessary libraries screens and components
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function SiSearchgnIn() {
+export default function Search() {
     return (
       <View style={styles.container}>
-        <Text>Seatch in!</Text>
+        <Text>Searching!</Text>
       </View>
     );
   }

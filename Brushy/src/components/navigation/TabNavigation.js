@@ -1,14 +1,16 @@
+// Import all the neccessary libraries, screens and components
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'; // Bottom tabs navigator from Material design
 import { Provider } from 'react-native-paper'; // Provide theme context to the react-native -paper components
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
-import Home from './Home';
-import RewardsScreen from './RewardsScreen';
-import ParentScreen from './ParentScreen';
-import ParentNav from './ParentNav';
+import { Home, RewardsScreen} from '../../screens'; // Screens
+import { ParentNav} from './';
+
 // Create the bottom tab navigator (menu) 
 // Docs available at https://reactnavigation.org/docs/material-bottom-tab-navigator
+// Create an instance of the bottom tab navigator
 const Tab = createMaterialBottomTabNavigator();
 
+// Home Screen is the default landining page for the app
 export default function HomeScreen() {
   return (
    
@@ -50,4 +52,5 @@ export default function HomeScreen() {
           />
         </Tab.Navigator>
     </Provider>
-  );}
+  );
+}

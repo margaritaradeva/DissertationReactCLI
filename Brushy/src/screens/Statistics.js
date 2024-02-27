@@ -1,9 +1,10 @@
+// Import all the necessary libraries. screens and components
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Statistics() {
     return (
       <View style={styles.container}>
-        <Text>Sign in!</Text>
+        <Text>Statistics!</Text>
       </View>
     );
   }

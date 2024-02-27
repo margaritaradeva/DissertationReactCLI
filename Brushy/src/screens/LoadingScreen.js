@@ -1,9 +1,10 @@
+// Import all necessary libraries, screens and components
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function LoadingScreen() {
     return (
       <View style={styles.container}>
-        <Text>HomEEEEEEEEEEEEEEEEEEEEEEEe!</Text>
+        <Text>Loading Screen</Text>
       </View>
     );
   }

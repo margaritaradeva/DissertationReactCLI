@@ -1,11 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Search from './Search';
-import Friends from './Friends';
-import Statistics from './Statistics';
-import Settings from './Settings';
-import { ParentScreen } from '.';
-import { profile } from '../assets';
+import Search from '../../screens/Search';
+import Friends from '../../screens/Friends';
+import Statistics from '../../screens/Statistics';
+import Settings from '../../screens/Settings';
+import { ParentScreen } from '../../screens';
+import { profile } from '../../assets';
 import { Image } from 'react-native';
 
 const ParentStack = createNativeStackNavigator();
