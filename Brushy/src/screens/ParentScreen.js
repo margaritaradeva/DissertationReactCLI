@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+// Import all of the necessary libraries, screens and components
+import { StyleSheet, View} from 'react-native';
 import React from 'react';
-import { List } from 'react-native-paper';
+import { List } from 'react-native-paper'; // Using list from react-native-paper (as opposed to regular react native list)
 
 
 

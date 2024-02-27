@@ -1,23 +1,22 @@
+// IMport all the necessary libraries, screens and components
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Search from '../../screens/Search';
-import Friends from '../../screens/Friends';
-import Statistics from '../../screens/Statistics';
-import Settings from '../../screens/Settings';
-import { ParentScreen } from '../../screens';
-import { profile } from '../../assets';
-import { Image } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; // Stack navigator
+import { Search, Friends, Statistics, Settings, ParentScreen } from '../../screens'; // Screens
+import { profile } from '../../assets'; // Profile Picture
+import { Image, StyleSheet } from 'react-native'; 
 
+// Create a stack navigator instance
 const ParentStack = createNativeStackNavigator();
 export default function ParentNav() {
   return (
     <ParentStack.Navigator>
+      {/* Main (First) screen to load is the parents screen. All of the other ones will be displayed in a list*/}
       <ParentStack.Screen name="Parents Settings" component={ParentScreen}
       options={{
         headerLeft: () => (
           <Image
                 source={profile}
-                style={{width:40, height:40, marginRight:10, borderRadius:26}}
+                style={styles.profilePic}
                 resizeMode='contain'/>
         ),
       }}/>
@@ -29,3 +28,11 @@ export default function ParentNav() {
   );
 }
 
+const styles = StyleSheet.create({
+  profilePic: {
+      width: 40,
+      height: 40,
+      marginRight: 10,
+      borderRadius: 26,
+  },
+});

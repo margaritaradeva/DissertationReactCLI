@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
-import CustomButton from '../components/CustomButton';
-import { Input } from '../components';
+// Import all of the necessary libraries, screens and components
+import { StyleSheet, Text, View, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import { CustomButton, Input }from '../components'; // Custom components
 import { useState } from 'react';
-import { Switch } from 'react-native-paper';
-import api from '../core/api';
-import utils from '../core/utils';
-import useGlobally from '../core/global';
+import { Switch } from 'react-native-paper'; // For password visibility
+import { api , utils, useGlobally} from '../core'; // Custom components
+
 
 
 export default function SignIn({navigation}) {
@@ -95,7 +94,7 @@ export default function SignIn({navigation}) {
         secureTextEntry={seePassword}/>
         <View style={styles.toggleContainer}>
           <Text>Show Password</Text>
-          <Switch value={seePassword}
+          <Switch value={!seePassword}
           onValueChange={(newValue) => setSeePassword(newValue)}/>
         </View>
 

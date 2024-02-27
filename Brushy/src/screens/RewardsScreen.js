@@ -1,3 +1,4 @@
+// Import all of the necessary libraries, screens and components
 import React, { useRef, useState } from "react";
 import { StyleSheet, View, Image, Text, Pressable, ScrollView, Dimensions } from "react-native";
 import { dog } from '../assets';

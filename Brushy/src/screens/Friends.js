@@ -1,9 +1,10 @@
+// Import all of the necessary libraries, screens and components
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Friends() {
     return (
       <View style={styles.container}>
-        <Text>HomEEEEEEEEEEEEEEEEEEEEEEEe!</Text>
+        <Text>Friends!</Text>
       </View>
     );
   }
