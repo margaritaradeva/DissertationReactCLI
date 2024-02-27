@@ -1,13 +1,11 @@
-import axios from 'axios'
-import { Platform } from 'react-native';
+import axios from 'axios';
 
+// Your Heroku app's base URL
+const HEROKU_BASE_URL = 'https://expo-brushy-56de67f02740.herokuapp.com';
 
-const ADRESS = Platform.OS === 'ios'
-    ? 'http://localhost:8000'
-    : 'http://10.0.2.2:8000'
-// So we dont have to provide them every single time we make a request
+// Initialize axios with the Heroku base URL
 const api = axios.create ({
-    baseURL:  ADRESS,
+    baseURL: HEROKU_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }

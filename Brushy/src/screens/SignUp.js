@@ -32,7 +32,7 @@ export default function SignUp({navigation}) {
     const hasNumber = /\d/.test(password);
     const hasSpecial = /[^A-Za-z0-9]/.test(password);
 
-    const [validationIssues, setValidationIssues] = useState(false);
+    
     const [seePassword, setSeePassword] = useState(false);
     useEffect (() => {
         updatePasswordFeedback(password);
@@ -87,29 +87,30 @@ export default function SignUp({navigation}) {
     };
 
     function onSignUp() {
+        let hasValidationIssues = false;
         console.log('on sign upppppp',username,password)
     //Check username
     const noUsername = !username
     const usernameHasSpecial = /[^A-Za-z0-9_.]/.test(username);
     if (noUsername || username.length<6) {
       setUsernameError('Username must be longer than 5 characters');
-      setValidationIssues(true);
+      hasValidationIssues = true;
     } else if (usernameHasSpecial) {
         setUsernameError('Username must not contain any special characters');
-        setValidationIssues(true);
+        hasValidationIssues = true;
     } 
     //check email
     
     const noEmail = !email 
     if (noEmail) {
         setEmailError('Email not provided');
-        setValidationIssues(true);
+        hasValidationIssues = true;
  
     } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setEmailError('Please enter a valid email address');
-            setValidationIssues(true);
+            hasValidationIssues = true;
         } else {
             setEmailError(''); // clear any previous errors if the email is now valid
            
@@ -119,36 +120,36 @@ export default function SignUp({navigation}) {
     const noFirstName = !firstName
     if (noFirstName) {
         setFirstNameError('Please enter your first name');
-        setValidationIssues(true);
+        hasValidationIssues = true;
 
     }
     //check Last name
     const noLastName = !lastName
     if (noLastName) {
         setLastNameError('Please enter your last name');
-        setValidationIssues(true);
+        hasValidationIssues = true;
     }
     //check password-len 8, uppercase, special char and num
     const noPassword = !password
     if (noPassword || password.length <8 ) {
       setPasswordError('Password must be at least 8 characters long');
-      setValidationIssues(true);
+      hasValidationIssues = true;
     } else {
         
 
         if (!hasUpper){
             setPasswordError('Password must contain at least one uppercase letter');
-            setValidationIssues(true);
+            hasValidationIssues = true;
 
         } else if (!hasNumber) {
             setPasswordError('Password must contain at least one number');
-            setValidationIssues(true);
+            hasValidationIssues = true;
         } else if (!hasSpecial){
             setPasswordError('Password must contain at least one special character');
-            setValidationIssues(true);
+            hasValidationIssues = true;
         } else if (password.length>30) {
             setPasswordError('Password must be no longer than 35 characters');
-            setValidationIssues(true);
+            hasValidationIssues = true;
         }else {
             setPasswordError(''); // clear any previous error
         }
@@ -163,14 +164,14 @@ export default function SignUp({navigation}) {
     const noRepeatedPassword = !repeatedPassword
     if (noRepeatedPassword) {
         setRepeatedPasswordError('Please  confirm your password');
-        setValidationIssues(true);
+        hasValidationIssues = true;
     }
     if (password !== repeatedPassword){
         setRepeatedPasswordError('Passwords do not match');
-        setValidationIssues(true);
+        hasValidationIssues = true;
     }
     //break out of this function if there were any issues
-    if (validationIssues) {return}
+    if (hasValidationIssues) {return} else{
     //make sign in request
     api({
         method: 'POST',
@@ -209,6 +210,7 @@ export default function SignUp({navigation}) {
         }
         console.log(error.config);
       });
+    }
    };
        
     return (

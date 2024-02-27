@@ -1,0 +1,45 @@
+# Dependencies
+
+/Brushy/__tests__
+/Brushy/.bundle
+/Brushy/android
+/Brushy/ios
+
+# Packager cache
+/Brushy/$REACT_NATIVE_PACKAGER_CACHE_*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor files
+/Brushy/.vscode/
+/Brushy/.idea/
+/Brushy/node_modules/
+# Logs
+/Brushy/yarn-error.log
+/Brushy/npm-debug.log
+
+# Environment files
+*.env
+
+# iOS Pods
+/Brushy/ios/Pods/
+
+# Keystores
+/Brushy/*.jks
+/Brushy/*.keystore
+
+# Cache
+/Brushy/.gradle/
+/Brushy/.haste-map-metro-*
+/Brushy/.jest/
+
+# Generated files
+/Brushy/android/
+/Brushy/ios/
+
+# Temp files
+*.swp
+*.swo
+*~
