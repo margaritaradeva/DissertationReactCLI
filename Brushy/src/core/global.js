@@ -1,63 +1,80 @@
 import { create } from "zustand";
 import secure from "./secure";
 import api from "./api";
+import EncryptedStorage from "react-native-encrypted-storage";
 
 
-const useGlobally = create((set) => ({
+const useGlobally = create((set, get) => ({
 
     // Initialisation
-
+    authenticated:false,
     initialised: false,
     init: async () => {
-        const credentials = await secure.get('credentials')
-        if (credentials) {
+        const accessToken = await EncryptedStorage.getItem('accessToken')
+        if (accessToken) {
             try {
-                const response = await api({
-                    method: 'POST',
-                    url: '/application/signin/',
-                    data: {
-                    username: credentials.username,
-                    password: credentials.password
-                    }
-            
-                })
-                if (response.status !== 200) {
-                    throw 'Authentication error'
+                await get().refreshToken()
+                
+                } catch (error) {
+                    console.log('refresh token failed')
+                    await get().logout()
+                    
                 }
-                const user = response.data.user;
-                set((state) => ({
-                    initialised:true,
-                    authenticated: true,
-                    user: user
-                }))
-                return
-            }catch (error) {
-                console.log('useGlobally.init:',error);
-            }
+               
            
+            } else {
+                console.log('No refresh token available')
             }
-        set(state => ({
-            initialised:true,
-        }))
+            set({initialised:true})
     },
     // Authentiation section
     authenticated: false,
     user: {},
 
-    login: (credentials, user) => {
-        secure.set('credentials', credentials)
-        set((state) => ({
+    login: async (credentials) => {
+        try{
+        const response = await api.post('/application/signin/', credentials)
+        await EncryptedStorage.setItem('accessToken', response.data.access)
+        await EncryptedStorage.setItem('refreshToken', response.data.refresh)
+        
+        set({
             authenticated: true,
-            user: user
-        }))
-
+            user: response.data.user
+        });
+        secure.set('credentials',response.data.user)
+       
+     } catch (error) {
+        console.log('Error logging in')
+        throw error // FIX THIS
+    }
     },
-    logout: () => {
-        secure.wipe()
-        set((state) => ({
+    logout: async () => {
+    await EncryptedStorage.removeItem('accessToken');
+    await EncryptedStorage.removeItem('refreshToken');
+    secure.wipe()
+        set({
             authenticated: false,
             user: {}
-        }))
+        })
+    },
+
+    refreshToken: async () => {
+        try {
+            console.log('refresh here')
+            const refreshToken = await EncryptedStorage.getItem('refreshToken');
+            const response = await api.post('/application/token/refresh/', {refresh: refreshToken})
+            console.log(response.status)
+            const {access, refresh} = response.data
+            console.log(access, refresh)
+            if (access) {
+                await EncryptedStorage.setItem('accessToken',access)
+                set({authenticated:true})
+            }
+        } catch (error) {
+            console.log('error refreshing token',error)
+            await get().logout()
+        }
+
     }
 
 }))

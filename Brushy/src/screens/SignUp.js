@@ -85,20 +85,23 @@ export default function SignUp({navigation}) {
         }
 
     };
+    function capitalizeFirstLetter(string){
+        if (!string) return string
+        return string.charAt(0).toUpperCase() + string.slice(1)
+    }
 
+    function handleFirstNameChange(text) {
+        const capitalized = capitalizeFirstLetter(text)
+        setFirstName(capitalized)
+    }
+    function handleLastNameChange(text) {
+        const capitalized = capitalizeFirstLetter(text)
+        setLastName(capitalized)
+    }
     function onSignUp() {
         let hasValidationIssues = false;
         console.log('on sign upppppp',username,password)
-    //Check username
-    const noUsername = !username
-    const usernameHasSpecial = /[^A-Za-z0-9_.]/.test(username);
-    if (noUsername || username.length<6) {
-      setUsernameError('Username must be longer than 5 characters');
-      hasValidationIssues = true;
-    } else if (usernameHasSpecial) {
-        setUsernameError('Username must not contain any special characters');
-        hasValidationIssues = true;
-    } 
+   
     //check email
     
     const noEmail = !email 
@@ -122,13 +125,13 @@ export default function SignUp({navigation}) {
         setFirstNameError('Please enter your first name');
         hasValidationIssues = true;
 
-    }
+    } 
     //check Last name
     const noLastName = !lastName
     if (noLastName) {
         setLastNameError('Please enter your last name');
         hasValidationIssues = true;
-    }
+    } 
     //check password-len 8, uppercase, special char and num
     const noPassword = !password
     if (noPassword || password.length <8 ) {
@@ -173,11 +176,11 @@ export default function SignUp({navigation}) {
     //break out of this function if there were any issues
     if (hasValidationIssues) {return} else{
     //make sign in request
+    
     api({
         method: 'POST',
         url: '/application/signup/',
         data: {
-          username: username,
           email: email,
           first_name: firstName,
           last_name: lastName,
@@ -187,7 +190,7 @@ export default function SignUp({navigation}) {
       })
       .then(response => {
         const credentials ={
-            username:username,
+            email:email,
             password:password
         }
         utils.log('Sign Up', response.data);
@@ -200,9 +203,13 @@ export default function SignUp({navigation}) {
           console.log('Error1');
           console.log(error.response.data);
           console.log(error.response.status);
-          console.log(error.reasponse.headers);
+          console.log(error.response.headers);
   
-        } else if (error.request) {
+        } 
+        if (error.response.status==409){
+            console.log('here')
+            setEmailError('A user with this email already exists')
+        }else if (error.request) {
           console.log('Error2');
           console.log(error.config);
         } else {
@@ -222,12 +229,6 @@ export default function SignUp({navigation}) {
             style={{flex: 1}}>
       <View style={styles.container}>
         <Text>Sign Up!</Text>
-        <Input title='Username'
-        value={username}
-        error={usernameError}
-        setValue={setUsername}
-        setError={setUsernameError}
-        />
         <Input title='Email'
         value={email}
         error={emailError}
@@ -236,12 +237,12 @@ export default function SignUp({navigation}) {
         <Input title='First Name'
         value={firstName}
         error={firstNameError}
-        setValue={setFirstName}
+        setValue={handleFirstNameChange}
         setError={setFirstNameError}/>
         <Input title='Last Name'
         value={lastName}
         error={lastNameError}
-        setValue={setLastName}
+        setValue={handleLastNameChange}
         setError={setLastNameError}/>
         <Input title='Password'
         value={password}

@@ -17,7 +17,7 @@ async function get(key) {
             return JSON.parse(data)
         }
     } catch(error) {
-        console.log('secure.get:', error);
+        console.log('secure.get1:', key, error);
     }
 }
 

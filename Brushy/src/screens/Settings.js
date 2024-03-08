@@ -4,19 +4,67 @@ import { profile } from '../assets'; // Profile picture
 import { CustomButton } from '../components'; // Custom made button
 import useGlobally from '../core/global'; // Global state manager from zustand
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
+import secure from '../core/secure';
+import { api } from '../core';
+import { useEffect, useState } from 'react';
 
 export default function Settings() {
+ 
+  
+  const [credentials, setCredentials] = useState(null);
   const logout = useGlobally(state => state.logout) // Log out function from core/global
+  async function getDetails() {
+    const getUserDetails = await secure.get('credentials')
+    setCredentials(getUserDetails)
+  }
 
+  useEffect (() => {
+    getDetails()
+  },[])
+  
+console.log(credentials)
+  async function deleteUser() {
+    const credentials = await secure.get('credentials')
+    try {
+      console.log('here',credentials)
+      const response = await api({
+        method: 'POST',
+        url: '/application/delete/',
+        data: {
+          email: credentials.email, 
+        }
+      });
+  
+      // Simplified handling for demonstration
+      if (response.status === 204) { // Check for successful deletion
+        logout();  
+      } else {
+        console.log('errr')
+        // Handle unsuccessful deletion - display error message to user
+      }
+  
+    } catch (error) {
+      console.error("Error deleting user:", error); 
+      // Display an error message to the user about the failed deletion
+    }
+  }
+  
     return (
       <View style={styles.container}>
         <Image source={profile}
         style={styles.image}/>
-        <Text
-        style={styles.name}>
-          Margarita Radeva</Text>
-        <Text style={styles.username}>@maggie</Text>
-          <CustomButton 
+        {credentials? (
+          <Text style={styles.name}>{credentials.first_name} {credentials.last_name}</Text>
+        ):(
+          <Text style={styles.name}>Loading</Text>
+        )}
+      
+          { credentials? (
+        <Text style={styles.username}>@{credentials.email}</Text>
+          ) : (
+            <Text style={styles.username}>Loading</Text>
+          )} 
+        <CustomButton 
           style={{
             flexDirection: 'row',
             height: 52,
@@ -38,6 +86,7 @@ export default function Settings() {
           iconColor={'#d0d0d0'}
           iconSize={20}
           />
+          <CustomButton title="Delete user" onPress={deleteUser}/>
       </View>
     );
   }

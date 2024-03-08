@@ -33,41 +33,46 @@ export default function SignIn({navigation}) {
       return
     }
     //make sign in request
-    api({
-      method: 'POST',
-      url: '/application/signin/',
-      data: {
-        username: username,
-        password: password
-      }
+    // api({
+    //   method: 'POST',
+    //   url: '/application/signin/',
+    //   data: {
+    //     email: username,
+    //     password: password
+    //   }
 
-    })
-    .then(response => {
-      const credentials = {
-        username: username,
-        password: password
-      }
-      utils.log('Sign In', response.data);
-      login(credentials, response.data.user)
+    // })
+    // .then(response => {
+    //   const credentials = {
+    //     username: username,
+    //     password: password
+    //   }
+    //   utils.log('Sign In', response.data);
+    //   login(credentials, response.data.user)
 
-    })
+    // })
     // from Axios.com
-    .catch(error => {
-      console.log('Error');
-      if (error.response) {
-        console.log('Error1');
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.reasponse.headers);
+    // .catch(error => {
+    //   console.log('Error');
+    //   if (error.response) {
+    //     console.log('Error1');
+    //     console.log(error.response.data);
+    //     console.log(error.response.status);
+    //     console.log(error.reasponse.headers);
 
-      } else if (error.request) {
-        console.log('Error2');
-        console.log(error.config);
-      } else {
-        console.log('Error3', error.message);
-      }
-      console.log(error.config);
-    });
+    //   } else if (error.request) {
+    //     console.log('Error2');
+    //     console.log(error.config);
+    //   } else {
+    //     console.log('Error3', error.message);
+    //   }
+    //   console.log(error.config);
+    // });
+    login({ email: username, password: password }) 
+      .catch(error => {
+        // Handle login errors, display appropriate messages
+        console.log('Sign In Error', error);
+      }); 
    };
     return (
       // FIX SCROLL VIEW!!!!
