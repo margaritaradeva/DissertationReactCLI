@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, StyleSheet, StatusBar } from "react-native";
+import { View, Text, Button, Image, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
 import Animated, {
     useSharedValue,
     withTiming,
@@ -6,9 +6,9 @@ import Animated, {
     Easing,
 } from "react-native-reanimated"
 import { backgroundImg, logo } from "../assets";
-import { Input } from "../components";
+import { CustomButton, Input } from "../components";
 
-export default function LoginScreen(props) {
+export default function LoginScreen({navigation}) {
     return (
         <View style ={styles.container}>
             <StatusBar style="light"/>
@@ -24,9 +24,14 @@ export default function LoginScreen(props) {
             </View>
            
             <View style={styles.formContainer}>
-            <Text style={styles.textLogIn}>Log In</Text>
             <Input title="Email" margin="5" />
             <Input title="Password"/>
+            <CustomButton title='Log In' />
+            <Text>Don't have an account?
+            <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
+                <Text>Sign up</Text>
+            </TouchableOpacity>
+            </Text>
           </View>
         </View>
     )
@@ -38,7 +43,7 @@ const styles = StyleSheet.create({
         flex:1, // Take up all of the space
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColour: '#FFFFFF' // White
+        backgroundColor: '#FFFFFF' // White
     },
     backgroundImage: {
         flex: 1, // Take up all of the available space
@@ -56,22 +61,13 @@ const styles = StyleSheet.create({
         width: 115,
         height: 115,
     },
-    textLogIn: {
-        fontSize:30,
-        fontWeight: 'bold',
-        color: '#00008B',
-        alignSelf: 'flex-start',
-        marginLeft:'50%',
-        transform: [
-            { translateX: -50 },],
-        marginTop: '110%',
-    },
     formContainer: {
         flex:1,
         justifyContent: 'flex-start',
         alignItems: 'center',
         flexDirection: 'column',
         width:'100%',
+        marginTop: '110%',
     }
     
 
