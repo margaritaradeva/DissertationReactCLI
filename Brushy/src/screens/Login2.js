@@ -1,10 +1,5 @@
 import { View, Text, Button, Image, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
-import Animated, {
-    useSharedValue,
-    withTiming,
-    useAnimatedStyle,
-    Easing,
-} from "react-native-reanimated"
+import Animated, { FadeIn, FadeInUp, FadeOut } from "react-native-reanimated"
 import { backgroundImg, logo } from "../assets";
 import { CustomButton, Input } from "../components";
 
@@ -17,22 +12,23 @@ export default function LoginScreen({navigation}) {
                 source={backgroundImg}
             />
             <View style={styles.logoContainer}>
-                <Image
+                <Animated.Image
+                    entering={FadeInUp.delay(200).duration(2000).springify()}
                     style={styles.leftLogo}
                     source={logo}
                 />
             </View>
-           
             <View style={styles.formContainer}>
-            <Input title="Email" margin="5" />
-            <Input title="Password"/>
-            <CustomButton title='Log In' />
-            <Text>Don't have an account?
-            <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
-                <Text>Sign up</Text>
-            </TouchableOpacity>
-            </Text>
-          </View>
+                <Input title="Email" margin="5" />
+                <Input title="Password"/>
+                <CustomButton title='Log In' />
+                <View style={styles.signUpRow}>
+                    <Text>Don't have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
+                        <Text style={styles.signUpText}>Sign up</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     )
 }
@@ -68,8 +64,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width:'100%',
         marginTop: '110%',
-    }
-    
+    },
+    signUpRow: {
+        flexDirection: 'row',
+    },
+    signUpText: {
+        color:'#00008b'
+    },
 
 
 });
