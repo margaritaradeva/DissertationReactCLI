@@ -16,7 +16,7 @@ export default function LoginScreen({navigation}) {
     const [seePassword, setSeePassword] = useState(false);
 
     const login = useGlobally(state => state.login); // Login API call
-
+    let validationErrors = false
     // function that checks user input before sending an API call
     async function onLogIn() {
         // Clear Previous error
@@ -25,14 +25,20 @@ export default function LoginScreen({navigation}) {
         const noEmail = !email
         if (noEmail) {
             setEmailError('Email is required')
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+            setEmailError('Please enter a valid email address');
+            validationErrors = true
         }
+    }
         //check password
         const noPassword = !password
         if (noPassword) {
             setPasswordError('Password is required')
         }
         //break out of this function if there were any issues
-        if (noEmail || noPassword) {
+        if (noEmail || noPassword || validationErrors) {
             return
         }
         try{
