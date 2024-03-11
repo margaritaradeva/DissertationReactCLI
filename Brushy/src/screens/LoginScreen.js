@@ -1,13 +1,33 @@
 // Import all of the necessary libraries, screens and components
 import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from "react-native-reanimated"
-import { useState } from 'react';
+import Animated, { FadeIn, withTiming, Easing, FadeInDown, FadeInUp, FadeOut, useAnimatedStyle, useSharedValue, withRepeat, withSequence } from "react-native-reanimated"
+import { useEffect, useState } from 'react';
 import { Switch } from 'react-native-paper'; // For password visibility
 import { backgroundImg, logo } from "../assets";
-import { CustomButton, Input } from "../components";
+import { CustomButton, Input, Title } from "../components";
 import { useGlobally} from '../core'; // Custom components
 
 export default function LoginScreen({navigation}) {
+    const translateY = useSharedValue(0)
+    const animationDuration = 1000
+
+    useEffect(() => {
+      translateY.value = withRepeat(
+        withSequence(
+            withTiming(20, {duration: animationDuration, easing: Easing.linear}),
+            withTiming(0, {duration: animationDuration, easing: Easing.linear})
+        ),
+        -1,
+        true
+      );
+    },[])
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateY: translateY.value}],
+        }
+    })
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -21,7 +41,7 @@ export default function LoginScreen({navigation}) {
     async function onLogIn() {
         // Clear Previous error
         setRequestError('')
-        //Check username
+        //Check email
         const noEmail = !email
         if (noEmail) {
             setEmailError('Email is required')
@@ -67,9 +87,13 @@ export default function LoginScreen({navigation}) {
                 style={styles.backgroundImage}
                 source={backgroundImg}
             />
+            <Animated.View style={[animatedStyle, {marginTop:'5%'}]}>
+          <Title text="Brushy" color="white"/>
+          <Title text="Login" color="white"/>
+          </Animated.View>
             <View style={styles.logoContainer}>
                 <Animated.Image
-                    entering={FadeInUp.delay(200).duration(2000).springify().damping(3)}
+                    entering={FadeInDown.delay(200).duration(500).springify()}
                     style={styles.leftLogo}
                     source={logo}
                 />
@@ -154,7 +178,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         width:'100%',
-        marginTop: '110%',
+        marginTop: '60%',
     },
     forms: {
         width:'100%',
