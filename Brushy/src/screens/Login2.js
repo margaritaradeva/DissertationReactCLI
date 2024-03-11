@@ -1,5 +1,5 @@
 import { View, Text, Button, Image, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
-import Animated, { FadeIn, FadeInUp, FadeOut } from "react-native-reanimated"
+import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from "react-native-reanimated"
 import { backgroundImg, logo } from "../assets";
 import { CustomButton, Input } from "../components";
 
@@ -13,21 +13,31 @@ export default function LoginScreen({navigation}) {
             />
             <View style={styles.logoContainer}>
                 <Animated.Image
-                    entering={FadeInUp.delay(200).duration(2000).springify()}
+                    entering={FadeInUp.delay(200).duration(2000).springify().damping(3)}
                     style={styles.leftLogo}
                     source={logo}
                 />
             </View>
             <View style={styles.formContainer}>
-                <Input title="Email" margin="5" />
-                <Input title="Password"/>
+                <Animated.View 
+                    entering={FadeInDown.duration(1000).springify()}
+                    style={styles.forms}>
+                        <Input title="Email" margin="5" />
+                </Animated.View>
+                <Animated.View 
+                    entering={FadeInDown.duration(1000).springify()}
+                    style={styles.forms}>
+                        <Input title="Password"/>
+                </Animated.View>
                 <CustomButton title='Log In' />
-                <View style={styles.signUpRow}>
-                    <Text>Don't have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
-                        <Text style={styles.signUpText}>Sign up</Text>
-                    </TouchableOpacity>
-                </View>
+                <Animated.View 
+                    entering={FadeInDown.duration(1000).springify()}
+                    style={styles.signUpRow}>
+                        <Text>Don't have an account? </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
+                            <Text style={styles.signUpText}>Sign up</Text>
+                        </TouchableOpacity>
+                </Animated.View>
             </View>
         </View>
     )
@@ -64,6 +74,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width:'100%',
         marginTop: '110%',
+    },
+    forms: {
+        width:'100%',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     signUpRow: {
         flexDirection: 'row',
