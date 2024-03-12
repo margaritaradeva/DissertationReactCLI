@@ -21,7 +21,6 @@ api.interceptors.request.use(
             originalRequest._retry = true; // First retry attempt
         
         try {
-            console.log('api refresh')
             const refreshToken = await EncryptedStorage.getItem('refreshToken');
             const refreshResponse = await api.post('application/token/refresh/', {refresh:refreshToken})
             
@@ -35,7 +34,6 @@ api.interceptors.request.use(
             api.defaults.headers.common['Authorization'] = `Bearer ${access}`
             return api(originalRequest)
         } catch (refreshError) {
-            console.log('refresh token fail', refreshError)
             return Promise.reject(refreshError)
         }
 

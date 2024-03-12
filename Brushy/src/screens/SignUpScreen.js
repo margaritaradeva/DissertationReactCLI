@@ -209,7 +209,7 @@ export default function SignUpScreen({navigation}) {
                                 />
                             <View style={styles.logoContainer}>
                                 <Animated.Image
-                                    entering={FadeInUp.delay(200).duration(2000).springify().damping(3)}
+                                    entering={FadeInDown.delay(200).duration(2000).springify()}
                                     style={styles.leftLogo}
                                     source={logo}
                                 />
@@ -262,7 +262,7 @@ export default function SignUpScreen({navigation}) {
                                 <Animated.View 
                                     entering={FadeInDown.duration(2000).springify()}
                                     style={styles.forms}>
-                                        <Text>Password strength: {passwordStrength}</Text>
+                                        <Text style={{marginTop:'1.5%'}}>Password strength: {passwordStrength}</Text>
                                         <Input 
                                             title="Repeat Password"
                                             value={repeatedPassword}

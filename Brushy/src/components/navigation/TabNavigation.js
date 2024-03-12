@@ -2,7 +2,7 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'; // Bottom tabs navigator from Material design
 import { Provider } from 'react-native-paper'; // Provide theme context to the react-native -paper components
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
-import { Home, RewardsScreen} from '../../screens'; // Screens
+import { Home, RewardsScreen, LoginScreen} from '../../screens'; // Screens
 import { ParentNav} from './';
 
 // Create the bottom tab navigator (menu) 

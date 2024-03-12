@@ -123,7 +123,7 @@ export default function LoginScreen({navigation}) {
                             />
                 </Animated.View>
                 <Animated.View
-                    entering={FadeInDown.duration(2000).springify()}
+                    entering={FadeInDown.delay(200).duration(2000).springify()}
                     style={styles.forms}>
                     { requestError ? (
                         <Text style={styles.errorText}>{requestError}</Text>

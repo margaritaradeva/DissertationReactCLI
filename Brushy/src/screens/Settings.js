@@ -60,7 +60,7 @@ console.log(credentials)
         )}
       
           { credentials? (
-        <Text style={styles.username}>@{credentials.email}</Text>
+        <Text style={styles.username}>{credentials.email}</Text>
           ) : (
             <Text style={styles.username}>Loading</Text>
           )} 
