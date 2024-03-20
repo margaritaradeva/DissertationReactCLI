@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
+import { MotiView } from 'moti';
 
 // Keys for the pad
 const digits = [1,2,3,4,5,6,7,8,9,'',0, 'del']
@@ -13,6 +14,16 @@ const circleSize = width * 0.2
 
 // Define the size of the text in the circles
 const circleTextSize = circleSize * 0.4
+
+// Define pin length
+const pinLength = 6
+
+// Define the size for block of text where the entered pin is displayed
+const pinSize = width/2
+
+// Define the size for each little square containing a digit
+const pinTextSizeMax = pinSize / pinLength
+const pinTextSize = pinTextSizeMax - 10 
 
 function PinPad({onPress}) {
     return <FlatList 
@@ -39,19 +50,36 @@ function PinPad({onPress}) {
 export default function Pin() {
     const [pin, setPin] = useState([])
     const handlePress = (item) => {
-        if (item !== '' && item !== 'del') {
-            setPin(prevPin => [...prevPin, item])
-            console.log(pin)
-        } else if (item === 'del') {
-            setPin(prevPin => prevPin.slice(0, prevPin.length - 1 ))
-            console.log(pin)
-        }
 
-        
+        if (item !== '' && item !== 'del') {
+            if (pin.length === pinLength) return
+            setPin(prevPin => {
+                const newPin = [...prevPin, item]
+                console.log(newPin)
+                return newPin})
+               
+        } else if (item === 'del') {
+            setPin(prevPin => {
+            const newPin = prevPin.slice(0, prevPin.length - 1 )
+            console.log(newPin)
+            return newPin})
+        }
     };
+
+
     return (
+       
         <View style={styles.container}>
-            <Text>Please enter your pin</Text>
+            <View style={styles.onRow}>
+            {[...Array(pinLength).keys()].map( i => {
+                const isSelected =  i < pin.length;
+                return <MotiView 
+                key = {`pin-${i}`}
+                style ={styles.pinArray}
+                transition={{type:'timing',duration:100}}
+                animate={{height: isSelected ? pinTextSize : 2, marginBottom: isSelected ? pinTextSize : 0}} />
+            })}
+        </View>
             <PinPad onPress={handlePress}/>
         </View>
     )
@@ -74,5 +102,18 @@ const styles = StyleSheet.create({
     },
     circleText: {
         fontSize:circleTextSize,
+    },
+    pinArray: {
+        width: pinTextSize,
+        borderRadius: pinTextSize,
+        backgroundColor:'red',
+    },
+    onRow: {
+        flexDirection: 'row',
+        gap: 15,
+        marginBottom: 40,
+        // backgroundColor: 'green',
+        height: pinTextSize*2,
+        alignItems: 'flex-end'
     },
 })
