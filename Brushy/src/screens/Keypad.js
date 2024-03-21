@@ -3,6 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions } from "
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
 import { MotiView } from 'moti';
 import { api } from "../core";
+import { BlurView } from "@react-native-community/blur";
+import { CustomButton } from "../components";
+import { Modal, TextInput } from "react-native";
 
 
 // Keys for the pad
@@ -50,33 +53,79 @@ function PinPad({onPress}) {
 }
 
 
-export default function Pin() {
+export default function Pin({navigation}) {
+    const [showModal, setShowModal] = useState(false);
     const [pin, setPin] = useState([])
     const [firstPin, setFirstPin] = useState(null)
     const [confirmingPin, setConfirmingPin] = useState(false);
     const [loading, setLoading] = useState(true) // used for knowing if the async function has finished execution
     const [message, setMessage] = useState('')
     const [isPinSet, setIsPinSet] = useState(false)
-    
+    const [matchedPins, setMatchedPins] = useState(false)
+    const [move, setMove] = useState(false)
 
+    const triggerAnimation = () => {
+        setMatchedPins(true)
+        setTimeout(() => {
+            setMatchedPins(false)
+            setMessage('Please set up your pin')
+        }, 600)
+    }
     useEffect(() => {
         // When the component renders check of the pin has ever been set before
         checkPinStatus()
-        
+        setPin([])
+        setConfirmingPin(false)
     },[])
     
     useEffect(() => {
-        if (pin.length === pinLength) {
-            if (!confirmingPin) {
-                setFirstPin(pin)
+        if (!isPinSet) {
+            if (pin.length === pinLength) {
+                if (!confirmingPin) {
+                    setFirstPin(pin)
                 setPin([])
                 setConfirmingPin(true)
             } else {
-                console.log(firstPin,pin)
+                const arePinsIdentical = firstPin.length === pin.length && firstPin.every((element, index) => element === pin[index])
+                if (!arePinsIdentical) {
+                    // shake the numbers left and right do show they werent identical
+                    // Prompt users to make enter both pins again
+                    setMessage('Pins do not match')
+                    triggerAnimation()
+                    setTimeout(() => {
+                        setPin([])
+                        setFirstPin(null)
+                        setConfirmingPin(false)
+                    },600)
+                } else {
+                    const pinString = firstPin.join('')
+                    console.log(pinString)
+                    setUpPin(pinString)
+                }
             }
         }
-    })
+    } else {
+        if (pin.length === pinLength) {
+            const pinString = pin.join('')
+            console.log(pinString)
+            checkPin(pinString)
+        }
 
+    }
+    }, [pin])
+
+
+    useEffect (() => {
+        if (move) {
+            setMessage('Please enter your pin')
+          setPin([])
+          setMove(false)
+          setMessage('Please enter your pin')
+        navigation.navigate("Parents Settings")  
+        }
+        
+
+    }, [move])
 
 
     useEffect (() => {
@@ -101,9 +150,60 @@ export default function Pin() {
         
        
     }
+    async function setUpPin(pinToSet) {
+        try{
+            const response = await api({
+                method: 'POST',
+                url: '/application/setPin/',
+                data: {
+                  "parent_pin":pinToSet
+                }
+          
+              })
+              
+              setPin([])
+            setMessage('Please enter your pin')
+            setMove(true)
+            setConfirmingPin(false)
+            } catch (error){
+                console.log(error)
+    
+    
+              }
+    }
+    async function forgotPin() {
+        setIsPinSet(false)
+    }
+
+    async function checkPin(pinToCheck) {
+        try{
+        const response = await api({
+            method: 'POST',
+            url: '/application/checkPin/',
+            data: {
+                "parent_pin":pinToCheck
+            }
+        })
+        if (response.status === 200) {
+            console.log('yay')
+            setPin([])
+            setMessage('Please enter your pin')
+            setMove(true)
+            
+        } 
+        } catch (error) {
+            console.log(error)
+            setMessage('Pin is incorrect')
+            triggerAnimation()
+                    setTimeout(() => {
+                        setPin([])
+                    },600)
+        }
+    }
+
 
     const handlePress = (item) => {
-
+        if (!isPinSet){
         if (item !== '' && item !== 'del') {
            if (!confirmingPin && pin.length < pinLength){
             setPin(prevPin => [...prevPin, item])
@@ -116,10 +216,30 @@ export default function Pin() {
             const newPin = prevPin.slice(0, prevPin.length - 1 )
             console.log(newPin)
             return newPin})
+        }}else {
+            if (item !== '' && item !== 'del') {
+                if (pin.length <pinLength){
+                    setPin(prevPin => [...prevPin, item])
+                } 
+            }else if (item = 'del') {
+                setPin(prevPin => {
+                    const newPin = prevPin.slice(0, prevPin.length - 1)
+                    return newPin
+                })
+            }
         }
     };
 
    
+    async function closeModal  () {
+        
+    setShowModal(false)
+    
+}
+
+   function showModalOnScreen (){
+    setShowModal(true)
+   }
 
 
     return (
@@ -142,10 +262,31 @@ export default function Pin() {
                 key = {`pin-${i}`}
                 style ={styles.pinArray}
                 transition={{type:'timing',duration:100}}
-                animate={{height: isSelected ? pinTextSize : 2, marginBottom: isSelected ? pinTextSize : 0}} />
+                animate={{height: isSelected ? pinTextSize : 2, marginBottom: isSelected ? pinTextSize : 0, translateX: matchedPins ? [0, -20, 20, -20, 20, 0] : 0,}} />
             })}
         </View>
             <PinPad onPress={handlePress}/>
+            <View style={styles.onRowForgotPin}>
+            <Text>Forgot your Pin?</Text>
+             <TouchableOpacity>
+                <Text style={styles.forgotPin} onPress={showModalOnScreen}> Reset</Text>
+                 </TouchableOpacity></View>
+
+
+
+                 <Modal  animationType="slide" transparent={true} visible={showModal} onRequestClose={()=> setShowModal(false)}>
+            <BlurView 
+                style={StyleSheet.absoluteFill}
+                blurType="light"
+                blurAmount={100}
+                reducedTransparencyFallbackColor="white"/>
+           <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+           <TextInput placeholder="email"/>
+           <TextInput placeholder="password"/>
+       
+            <CustomButton title="close" onPress={closeModal}/></View>
+          </Modal>
+            
         </View>
     )
 }
@@ -187,5 +328,12 @@ const styles = StyleSheet.create({
     messageText: {
         fontSize: 20,
         color: '#000000'
+    },
+    forgotPin: {
+        color:'#00008b',
+    },
+    onRowForgotPin: {
+        flexDirection: 'row',
+        marginTop: 20,
     },
 })
