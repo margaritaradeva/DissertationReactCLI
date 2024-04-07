@@ -1,3 +1,4 @@
+// Re-export visuals to import more conveniently from this folder
 export const logo = require('./logo.png')
 export const morningBadge = require('./morningBadge.png');
 export const eveningBadge = require('./eveningBadge.png');

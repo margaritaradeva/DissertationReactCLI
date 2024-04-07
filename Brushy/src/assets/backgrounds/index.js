@@ -1,3 +1,4 @@
+// Re-export visuals to import more conveniently from this folder
 export const bathroom = require('./bathroom.png');
 export const bathroomZoomedIn = require('./background2.png')
 export const backgroundImg = require('./background.png');
