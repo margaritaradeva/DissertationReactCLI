@@ -1,130 +1,252 @@
 // Import all of the necessary libraries, screens and components
-import React, { useRef, useState } from "react";
-import { StyleSheet, View, Image, Text, Pressable, ScrollView, Dimensions } from "react-native";
-import { dog } from '../assets';
+import { View, Text, Image, StyleSheet, StatusBar } from "react-native";
+import { useEffect, useState } from 'react';
+import { Switch } from 'react-native-paper'; // For password visibility
+import { backgroundImg, logo } from "../assets";
+import { CustomButton, Input, Title } from "../components";
+import { useGlobally} from '../core'; // Custom components
+import { Animated } from "react-native";
 
-// Get the device's screen width so the background can be displayed properly using 100% of the screen
-const { width } = Dimensions.get('window');
-
-// Background component that displays the background images within the ScrollView
-// It accepts an image prop to determine the background image of a section
-const Background = ({ image }) => (
-    <View style={[styles.background, {backgroundColor: image}]}/>
-);
-
-// CHANGE LATER - For now just a button that implements the logic of ScrollView
-const ScrollButton = ({ onPress }) => (
-    <View style={styles.buttonWrapper}>
-        <Pressable style={styles.pressableButton} onPress={onPress}>
-            {({ pressed }) => (
-                <Text style={styles.pressableButtonText}>
-                    {pressed ? 'Scrolling...' : 'Scroll'}
-                </Text>
-            )}
-        </Pressable>
-    </View>
-);
-
-// Display the character in the central to the background images
-const Character = ({ character }) => (
-    <View style={styles.characterWrapper}>
-        <Image source={character} style={styles.characterImage} resizeMode='contain'/>
-    </View>
-);
-
-// Main component of the Rewards Screen which functionality is to move the 
-// background images while the dog stays centred. Additionally, a user can scroll manually all the way back,
-// but they cannot scroll right further than the position they have currently reached.
-const RewardsScreen = () => {
-
-    // Background images that scroll together to create the illusion it is one big image
-    const backgroundImages = ['skyblue', 'seagreen', 'sandybrown', 'yellow', 'pink', 'purple', 'green', 'white', 'orange'];
+export default function RewardsScreen({navigation}) {
+    const { userDetails, getDetails, setImageID, dogFullBody, setDogFullBodyImage} = useGlobally()
+    // const [dogFullBodyLocal, setDogFullBodyLocal] = useState({source: null, width: 180, height: 180});
     
-    const scrollViewRef = useRef(); // hook to keep a mutable reference to the scrollView to be able to control its position
-    const [scrollPosition, setScrollPosition] = useState(0); // hook to manage the current position of ScrollView
+    const [imageSize, setImageSize] = useState({ width: 180, height: 180 });
+    const [progressAnim] = useState(new Animated.Value(0))
+    const [sizeAnim] = useState(new Animated.ValueXY({ x: 180, y: 180 }));
+    const [progress, setProgress] = useState(0); // Simulate progress updates
+    const [dogPosition, setDogPosition] = useState({ x: '0%', y: '0%' });
+
     
-    // CHANGE LATER TO CHANGE DYNAMICALLY
-    const scrollIncrement = 100;
-    const scrollByIncrement = () => {
-        let newScrollPosition = scrollPosition + scrollIncrement;
-        scrollViewRef.current.scrollTo({ x: newScrollPosition, animated:true});
+    const images = {
+        dogFullBody: [
+            require('../assets/mini_shop/level1_item.png'),
+            require('../assets/mini_shop/level2_item.png'),
+            require('../assets/mini_shop/level3_item.png'),
+            require('../assets/mini_shop/level4_item.png'),
+            require('../assets/mini_shop/level5_item.png'),
+            require('../assets/mini_shop/level6_item.png'),
+            require('../assets/mini_shop/level7_item.png'),
+            require('../assets/mini_shop/level8_item.png'),
+            require('../assets/mini_shop/level9_item.png'),
+            require('../assets/mini_shop/level10_item.png')
+        ],
+        logo: [
+            require('../assets/mini_shop/level1.png'),
+            require('../assets/mini_shop/level2.png'),
+            require('../assets/mini_shop/level3.png'),
+            require('../assets/mini_shop/level4.png'),
+            require('../assets/mini_shop/level5.png'),
+            require('../assets/mini_shop/level6.png'),
+            require('../assets/mini_shop/level7.png'),
+            require('../assets/mini_shop/level8.png'),
+            require('../assets/mini_shop/level9.png'),
+            require('../assets/mini_shop/level10.png'),
+        ],
+      }
+    const pathPositions = [
+        { x: '20%', y: '80%'}, // 0%
+        { x: '40%', y: '70%'}, // 1-5 %
+        { x: '50%', y: '68%'}, // 6-10 %
+        { x: '55%', y: '61%'}, // 11-15%
+        { x: '39%', y: '59%'}, // 16-20%
+        { x: '24%', y: '54%'}, // 21-25%
+        { x: '26%', y: '47%'}, // 26-30%
+        { x: '36%', y: '49%'}, // 31-35%
+        { x: '48%', y: '46%'}, // 35-40%
+        { x: '48%', y: '43%'}, // 41-45%
+        { x: '41%', y: '43%'}, // 45-50%
+        { x: '37%', y: '41%'}, // 51-55%
+        { x: '37%', y: '34%'}, // 55-60% 
+        { x: '44%', y: '32%'}, // 61-65%
+        { x: '54%', y: '29%'}, // 66-70%
+        { x: '63%', y: '25%'}, // 71-75%
+        { x: '52%', y: '25%'}, // 76-80%
+        { x: '44%', y: '22%'}, // 81-85%
+        { x: '52%', y: '18%'}, // 85-90%
+        { x: '56%', y: '13%'}, // 91-95%
+        { x: '50%', y: '10%'}, // 96-99%
+        { x: '50%', y: '5%'}, // 100%
+    ]
+
+    const getPositionOfDog = (percentage) => {
+        let index = 0
+        if (percentage === 0) {
+            index = 0
+        } else if (percentage < 100) {
+            index = Math.floor((percentage-1)/5) + 1
+            console.log(index)
+        } else {
+            index = pathPositions.length - 1
+        }
+        
+        
+        return pathPositions[index]
     }
-    // Function/Event handler to update the scrol position state based on ScrollView's curremt position
-    const handleScrollPosition = (current) => {
-        const currentScrollPosition = current.nativeEvent.contentOffset.x;
-        setScrollPosition(currentScrollPosition); // Update the scroll position
-    };
+    useEffect(() => {
+        const fetchDetails = async () => {
+          await getDetails();
+          
+        };
+      
+        fetchDetails();
+        
+      }, []);
+      
+    const changeCharacterSize = (index) => {
+        const original = 180
+        const decreased = index * 8
+        const newSize = Math.max(original - decreased, 0)
+        Animated.timing(sizeAnim, {
+            toValue: {x :newSize, y: newSize},
+             duration: 1000,
+            useNativeDriver: false,
+        }).start()
+        
+    }
 
+    useEffect(() => {
+        // Simulate progress change
+        const interval = setInterval(() => {
+            setProgress((prevProgress) => {
+                const newProgress = prevProgress + 5;
+                return newProgress > 100 ? 0 : newProgress;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        // This function calculates the position based on the progress
+        const calculatePosition = (progress) => {
+            const index = Math.min(Math.floor(progress / 10), pathPositions.length - 1);
+            return pathPositions[index];
+        };
+
+        const newPosition = calculatePosition(progress);
+        setDogPosition(newPosition);
+    }, [progress]);
+
+    
+    useEffect(() => {
+        // Make sure `userDetails` is not null or undefined and has the `image_id` property
+        if (userDetails?.image_id) {
+          console.log('User details updated', userDetails.image_id);
+          const photoIndex = userDetails.image_id - 1; // Adjust index if necessary
+          if (photoIndex >= 0 && photoIndex < images.dogFullBody.length) {
+            const dogBodyImage = images.dogFullBody[photoIndex];
+            setDogFullBodyImage(dogBodyImage);
+            console.log('Image set to:', dogBodyImage);
+          }
+        }
+        console.log('current xp,', userDetails.current_level_xp)
+        if (userDetails.current_level_xp > 0){
+            console.log('current xp, MAX XP', userDetails.current_level_xp, userDetails.current_level_max_xp)
+            //const percentage = (userDetails.current_level_xp / userDetails.current_level_max_xp) * 100
+            const percentage = 35
+            console.log('per',percentage)
+            const size = changeCharacterSize(Math.floor(percentage/10))
+            animateDogPosition(percentage)
+            //
+            
+            setDogPosition(getPositionOfDog(0))
+            // // 
+            
+            setImageSize(size)
+            // console.log('dddd',imageSize)
+            // setDogFullBodyLocal({
+            //     source: images.dogFullBody[userDetails.image_id - 1],
+            //     width: size,
+            //     height: size
+            // })
+        } else if (userDetails.current_level_xp === 0){
+            const percentage = 0
+            animateDogPosition(percentage)
+            // const size = changeCharacterSize(percentage)
+            // setDogPosition(getPositionOfDog(percentage))
+            // setImageSize(size)
+        }
+
+      }, [userDetails]);
+
+      const animateDogPosition = (percentage) => {
+
+        
+
+        let targetIndex = 0
+
+        if (percentage === 0) {
+            index = 0
+        } else if (percentage < 100) {
+            targetIndex = Math.floor((percentage-1)/5) + 1
+            console.log(targetIndex)
+        } else {
+            targetIndex = pathPositions.length - 1
+        }
+        Animated.timing(progressAnim, {
+            toValue: targetIndex,
+            duration:3000,
+            useNativeDriver: false
+        }).start()
+      }
+
+      const dogPositionStyle = {
+        ...styles.dogImage,
+        left: progressAnim.interpolate({
+            inputRange: pathPositions.map((_, index)=> index),
+            outputRange: pathPositions.map(pos => pos.x)
+        }),
+        top: progressAnim.interpolate({
+            inputRange: pathPositions.map((_,index)=>index),
+            outputRange: pathPositions.map(pos=>pos.y)
+        }),
+        width: sizeAnim.x, 
+        height: sizeAnim.y,
+      }
+
+      
+    
     return (
-        <View style={styles.container}>
-            <ScrollView
-                ref={scrollViewRef}
-                horizontal
-                pagingEnabled={false}
-                showsHorizontalScrollIndicator={false}
-                onScroll={handleScrollPosition}
-                scrollEventThrottle={16}
-                style={styles.container}
-            >
-                {/* Render a background  for each image in backgroundImages array (acts as a for function)  */}
-                {backgroundImages.map((image, index) => (
-                    <Background key={index} image={image} />
-                ))}
-            </ScrollView>
+     
+        <View style ={styles.container}>
+            <StatusBar style="light"/>
+            <View style={styles.background}>
+            <Image
+                style={styles.backgroundImage}
+                source={require('../assets/rewards.png')}
+            /></View>
+            {dogPosition && dogFullBody  && (
+            <Animated.Image 
+                style={dogPositionStyle}
+                source={dogFullBody}/>)}
+            </View>
+       
+    )
+                    }
+                
 
-            {/* DELETE LATER */}
-            <ScrollButton onPress={scrollByIncrement} />
-            <Character character={dog} />
-
-
-        </View>
-    );
-};
 const styles = StyleSheet.create({
+    // Main container
+    container: {
+        flex:1, // Take up all of the space
+        backgroundColor: '#FFFFFF' // White
+    },
+    backgroundImage: {
+        flex: 1, // Take up all of the available space
+        width: '100%',
+        position: 'absolute'
+    },
+    dogImage: {
+        position: 'absolute',
+        resizeMode: 'contain'
+    },
     background: {
         flex: 1,
-        width: width,
-        height: '100%'
-    },
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+    
 
-    characterImage: {
-        width: 100,
-        height: 100,
-    },
-    characterWrapper: {
-        // Position the charactre centrally over the ScrollView
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: [
-            { translateX: -50 }, // Center the character horizontally.
-            { translateY: -50 }, // Center the character vertically.
-          ],
-    },
-    container: {
-        flex: 1,
-    },
-
-
-    // DELETE LATER
-    buttonWrapper: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        // Additional styles for button wrapper if needed
-    },
-    pressableButton: {
-        backgroundColor: '#007bff', // Example background color
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 5,
-        // Additional styles for Pressable button
-    },
-    pressableButtonText: {
-        color: '#ffffff', // Example text color
-        // Additional text styles
-    },
 
 });
-
-export default RewardsScreen;
