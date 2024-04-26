@@ -1,15 +1,14 @@
 import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {api, useGlobally} from '../core';
-import { backgroundImg, level1 } from "../assets";
 import { useEffect, useState } from "react";
 import secure from "../core/secure";
-import { Title } from "../components";
+import { Title } from "../components/common";
 import Animated, {useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming, Easing} from "react-native-reanimated";
-import { bathroom } from "../assets";
+import { bathroom, backgroundImg } from "../assets/backgrounds";
 export default function Shop() {
     
     const setDogFullBodyImage = useGlobally(state => state.setDogFullBodyImage)
-    const logo = require('../assets/level2.png')
+
     const [currentLevel, setCurrentLevel] = useState(5);
     const {dogFullBody, userDetails, getDetails, setImageID} = useGlobally()
     const [check, setCheck]= useState(false)

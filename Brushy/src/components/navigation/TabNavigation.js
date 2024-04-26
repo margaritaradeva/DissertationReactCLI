@@ -2,8 +2,9 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'; // Bottom tabs navigator from Material design
 import { Provider } from 'react-native-paper'; // Provide theme context to the react-native -paper components
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Icons
-import { Home, RewardsScreen, LoginScreen} from '../../screens'; // Screens
+import { Home, RewardsScreen, LoginScreen, Pin} from '../../screens'; // Screens
 import { ParentNav} from './';
+import Shop from '../../screens/Shop';
 
 // Create the bottom tab navigator (menu) 
 // Docs available at https://reactnavigation.org/docs/material-bottom-tab-navigator
@@ -33,11 +34,20 @@ export default function HomeScreen() {
             }}
           />
           <Tab.Screen
-            name="Rewards"
+            name="Progress"
             component={RewardsScreen}
             options={{
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="star" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Shop"
+            component={Shop}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="shopping" color={color} size={26} />
               ),
             }}
           />
@@ -49,6 +59,13 @@ export default function HomeScreen() {
                 <MaterialCommunityIcons name="account-switch-outline" color={color} size={26} />
               ),
             }}
+            listeners={({navigation, route}) => ({
+              tabPress: (e) => {
+                e.preventDefault()
+
+                navigation.navigate('Parents', {screen: 'Pin'})
+              }
+            })}
           />
         </Tab.Navigator>
     </Provider>

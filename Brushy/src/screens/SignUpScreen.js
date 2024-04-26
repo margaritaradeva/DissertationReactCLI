@@ -1,11 +1,10 @@
 import { View, Text, Button, Image, StyleSheet, StatusBar, TouchableOpacity, Keyboard, SafeAreaView, Platform, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView } from "react-native";
 import { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from "react-native-reanimated"
-import { api, utils, useGlobally } from '../core';
-import { backgroundSignUp, logo } from "../assets";
-import { CustomButton, Input } from "../components";
-
-
+import {api,  utils, useGlobally } from '../core';
+import { backgroundSignUp } from "../assets/backgrounds";
+import { logo } from "../assets/common";
+import { CustomButton, Input } from "../components/common";
 
 
 export default function SignUpScreen({navigation}) {
@@ -32,6 +31,8 @@ export default function SignUpScreen({navigation}) {
     const hasSpecial = /[^A-Za-z0-9]/.test(password);
     const hasLower = /[a-z]/.test(password);
 
+    const [seePassword, setSeePassword] = useState(false)
+    const [seePasswordRepeated, setSeePasswordRepeated] = useState(false)
     useEffect (() => {
         updatePasswordFeedback(password);
     }, [password]);
@@ -96,7 +97,7 @@ export default function SignUpScreen({navigation}) {
     }
 
 
-    function onSignUp() {
+    async function onSignUp() {
         let validationErrors = false;
         // Clear Previous error
         setRequestError('')
@@ -160,39 +161,55 @@ export default function SignUpScreen({navigation}) {
             validationErrors = true;
         }
         //break out of this function if there were any issues
-        if (validationErrors) {return} 
+        if (validationErrors) {
+            console.log("eeeeee")
+            return} 
         else{
-
+            console.log("we came here")
         //make sign up and sign in request
-        api({
+        console.log(api);
+       try{
+        const response = await api({
             method: 'POST',
             url: '/application/signup/',
             data: {
               email: email,
               first_name: firstName,
               last_name: lastName,
-              password: password
+              password: password,
+              total_brush_time:0,
+              current_level:1,
+              current_level_xp:0,
+              current_level_max_xp: 120,
+              image_id: 1,
+              current_streak:0,
+              max_streak:0,
+              total_brushes:0,
+              character_name: "Brushy"
             }
       
           })
-        .then(response => {
-            const credentials ={
-                email:email,
-                password:password
-            }
-            login(credentials, response.data.user);
-        })
-          // from Axios.com
-        .catch(error => {
-            if (error.response.status==409){
-                setRequestError('A user with this email already exists')
-            }
-        });
-        
-    
+          const credentials ={
+            email:email,
+            password:password
         }
-    
+        login(credentials, response.data.user);
+        } catch (error){
+            console.log(error)
+            if (error.response && error.response.status==409){
+                setRequestError('A user with this email already exists')
+            }else{
+                setRequestError('An error ocurred. Please try again later.')
+            }
+
+
+          }
+          console.log("we came here2")
+        
+        
     }
+    
+}
 
     return (
         <SafeAreaView style={{flex:1}}>
@@ -249,28 +266,54 @@ export default function SignUpScreen({navigation}) {
                                             clear={setRequestError}/>
                                 </Animated.View>
                                 <Animated.View 
-                                    entering={FadeInDown.duration(2000).springify()}
-                                    style={styles.forms}>
-                                        <Input 
-                                            title="Password"
-                                            value={password}
-                                            error={passwordError}
-                                            setValue={setPassword}
-                                            setError={setPasswordError}
-                                            clear={setRequestError}/>
-                                </Animated.View>
-                                <Animated.View 
-                                    entering={FadeInDown.duration(2000).springify()}
-                                    style={styles.forms}>
-                                        <Text style={{marginTop:'1.5%'}}>Password strength: {passwordStrength}</Text>
-                                        <Input 
-                                            title="Repeat Password"
-                                            value={repeatedPassword}
-                                            error={repeatedPasswordError}
-                                            setValue={setRepeatedPassword}
-                                            setError={setRepeatedPasswordError}
-                                            clear={setRequestError}/>
-                                </Animated.View>
+                                        entering={FadeInDown.duration(2000).springify()}
+                                        style={styles.forms}>
+                                            <View style={styles.passwordContainer}>
+                                            <Input 
+                                                title="Password"
+                                                value={password}
+                                                error={passwordError}
+                                                setValue={setPassword}
+                                                setError={setPasswordError}
+                                                clear={setRequestError}
+                                                secureTextEntry={!seePassword}
+                                                style={{flex:1}}
+                                                />
+                                                <TouchableOpacity
+                                                        onPress={() => setSeePassword(!seePassword)}
+                                                        style={styles.changeButton}>
+                                                    <Text style={styles.hidePasswordText}>
+                                                        {seePassword ? "Hide" : "Show"}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                    </Animated.View>
+                                    <Animated.View 
+                                        entering={FadeInDown.duration(2000).springify()}
+                                        style={styles.forms}>
+                                            <Text style={{marginTop:'1.5%'}}>Password strength: {passwordStrength}</Text>
+                                            <View style={styles.passwordContainer}>
+                                            <Input 
+                                                title="Repeat Password"
+                                                value={repeatedPassword}
+                                                error={repeatedPasswordError}
+                                                setValue={setRepeatedPassword}
+                                                setError={setRepeatedPasswordError}
+                                                clear={setRequestError}
+                                                secureTextEntry={!seePasswordRepeated}
+                                                style={{flex:1}}
+                                                />
+                                                <TouchableOpacity
+                                                        onPress={() => setSeePasswordRepeated(!seePasswordRepeated)}
+                                                        style={styles.changeButton}>
+                                                    <Text style={styles.hidePasswordText}>
+                                                        {seePasswordRepeated ? "Hide" : "Show"}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                    </Animated.View>
+                               
+                                            
                                 <Animated.View
                                     entering={FadeInDown.duration(2000).springify()}
                                     style={styles.forms}>
@@ -282,7 +325,7 @@ export default function SignUpScreen({navigation}) {
                                 <Animated.View 
                                     entering={FadeInDown.duration(2000).springify()}
                                     style={styles.signUpRow}>
-                                        <Text>Already have an account? </Text>
+                                        <Text style={styles.textForms}>Already have an account? </Text>
                                         <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
                                             <Text style={styles.signUpText}>Log in</Text>
                                         </TouchableOpacity>
@@ -347,6 +390,21 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop:'3%',
     },
-
+    passwordContainer: {
+        flexDirection: 'row',
+        position: 'relative'
+    },
+    changeButton: {
+        position:'absolute',
+        right: 15,
+        top: 25,
+        padding: 10
+    },
+    hidePasswordText: {
+        color: '#636363'
+    },
+    textForms: {
+        color: 'black'
+    }
 
 });

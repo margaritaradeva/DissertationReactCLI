@@ -12,6 +12,21 @@ const api = axios.create ({
     }
 });
 
+
+// For get requests
+api.interceptors.request.use(
+    async (config) => {
+        const accessToken = await EncryptedStorage.getItem('accessToken')
+        if (accessToken) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`
+        }
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
+
 // Add authorisation tokens
 api.interceptors.request.use(
     response => response,

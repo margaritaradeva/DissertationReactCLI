@@ -1,12 +1,13 @@
 // Import all of the necessary libraries, screens and components
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'; // Main navigation container and theming
-import { SignIn, SignUp, LoadingScreen} from './src/screens'; // Screens
+import { LoginScreen, SignUpScreen, LoadingScreen} from './src/screens'; // Screens
 import { TabNavigation } from './src/components/navigation'; // Tab Navigation screen
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // Stack navigator
 import { useEffect } from 'react'; // React hooks
 import useGlobally from './src/core/global'; // Custom hook for global state management
+import { LogBox } from 'react-native';
 
-
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 // Create a stack navigator instance
 const Stack =  createNativeStackNavigator();
 
@@ -14,7 +15,7 @@ const Stack =  createNativeStackNavigator();
 const AppTheme = {
     ...DefaultTheme,
     colors: {
-        background: 'lightblue'
+        background: 'white'
     }
 };
 
@@ -47,13 +48,13 @@ export default function App() {
                 <>
                 {/* Sign In/Sign Up screeens when a user is not authenticated yet */}
                   <Stack.Screen
-                        name="Sign In"
-                        component={SignIn}
+                        name="Log In"
+                        component={LoginScreen}
                         options={{headerShown:false}}
                         />
                   <Stack.Screen
                         name='Sign Up'
-                        component={SignUp}
+                        component={SignUpScreen}
                         options={{headerShown:false}}/>
                 </> 
                 ) : (

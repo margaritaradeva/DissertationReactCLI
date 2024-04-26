@@ -9,7 +9,7 @@ import Home from './Home';
 import  Statistics from './Statistics';
 import LoginScreen from './LoginScreen'
 import SignUpScreen from './SignUpScreen';
-
+import Pin from './Keypad';
 
 export {
   RewardsScreen,
@@ -21,5 +21,6 @@ export {
   Home,
   Statistics, 
   LoginScreen,
-  SignUpScreen
+  SignUpScreen,
+  Pin
 };

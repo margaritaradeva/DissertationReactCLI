@@ -1,23 +1,25 @@
-// Import all of the necessary libraries, screens and components
-import { View, Text, Image, StyleSheet, StatusBar } from "react-native";
+// Import necessary React Native and additional libraries
+import { View, Text, Image, StyleSheet, StatusBar, Animated } from "react-native";
 import { useEffect, useState } from 'react';
-import { Switch } from 'react-native-paper'; // For password visibility
-import { backgroundImg, logo } from "../assets";
-import { CustomButton, Input, Title } from "../components";
-import { useGlobally} from '../core'; // Custom components
-import { Animated } from "react-native";
+import { Switch } from 'react-native-paper'; // Import for additional components like Switch (not used in the provided code but imported)
+import { backgroundImg, logo } from "../assets"; // Importing assets, ensure these are correctly located in your project
+import { CustomButton, Input, Title } from "../components"; // Import custom components that are assumed to be created separately
+import { useGlobally } from '../core'; // Import a custom hook for global state management
+import { rewardsScreen } from "../assets/backgrounds"; // Import a specific background image
 
-export default function RewardsScreen({navigation}) {
-    const { userDetails, getDetails, setImageID, dogFullBody, setDogFullBodyImage} = useGlobally()
-    // const [dogFullBodyLocal, setDogFullBodyLocal] = useState({source: null, width: 180, height: 180});
-    
-    const [imageSize, setImageSize] = useState({ width: 180, height: 180 });
-    const [progressAnim] = useState(new Animated.Value(0))
-    const [sizeAnim] = useState(new Animated.ValueXY({ x: 180, y: 180 }));
-    const [progress, setProgress] = useState(0); // Simulate progress updates
-    const [dogPosition, setDogPosition] = useState({ x: '0%', y: '0%' });
+// Define the RewardsScreen functional component with navigation prop for routing
+export default function RewardsScreen({ navigation }) {
+    // Destructuring methods and state variables from the global custom hook
+    const { userDetails, getDetails, setImageID, dogFullBody, setDogFullBodyImage } = useGlobally();
 
-    
+    // State definitions for managing the animations and dog's position on the screen
+    const [imageSize, setImageSize] = useState({ width: 180, height: 180 }); // Initial size of the animated dog image
+    const [progressAnim] = useState(new Animated.Value(0)); // Initial state of progress for animations
+    const [sizeAnim] = useState(new Animated.ValueXY({ x: 180, y: 180 })); // Animation object for width and height
+    const [progress, setProgress] = useState(0); // Progress state to simulate loading or progression
+    const [dogPosition, setDogPosition] = useState({ x: '0%', y: '0%' }); // State for the dog's position on the screen
+
+    // Define the images for different levels of the game or application
     const images = {
         dogFullBody: [
             require('../assets/mini_shop/level1_item.png'),
@@ -43,9 +45,12 @@ export default function RewardsScreen({navigation}) {
             require('../assets/mini_shop/level9.png'),
             require('../assets/mini_shop/level10.png'),
         ],
-      }
+    };
+
+    // Define dog path positions at various points of the screen based on game progress
     const pathPositions = [
-        { x: '20%', y: '80%'}, // 0%
+        { x: '20%', y: '80%'}, // Start position
+        // Incremental positions based on percentage of progress, scaling across the screen from bottom to top
         { x: '40%', y: '70%'}, // 1-5 %
         { x: '50%', y: '68%'}, // 6-10 %
         { x: '55%', y: '61%'}, // 11-15%
@@ -66,187 +71,116 @@ export default function RewardsScreen({navigation}) {
         { x: '52%', y: '18%'}, // 85-90%
         { x: '56%', y: '13%'}, // 91-95%
         { x: '50%', y: '10%'}, // 96-99%
-        { x: '50%', y: '5%'}, // 100%
-    ]
+        { x: '50%', y: '5%'}, // Finish position at 100%
+    ];
 
-    const getPositionOfDog = (percentage) => {
-        let index = 0
-        if (percentage === 0) {
-            index = 0
-        } else if (percentage < 100) {
-            index = Math.floor((percentage-1)/5) + 1
-            console.log(index)
-        } else {
-            index = pathPositions.length - 1
-        }
-        
-        
-        return pathPositions[index]
-    }
+    // Fetch user details upon component mount and ensure they are updated appropriately
     useEffect(() => {
         const fetchDetails = async () => {
-          await getDetails();
-          
+            await getDetails(); // Assuming getDetails fetches and sets userDetails
         };
-      
         fetchDetails();
-        
-      }, []);
-      
-    const changeCharacterSize = (index) => {
-        const original = 180
-        const decreased = index * 8
-        const newSize = Math.max(original - decreased, 0)
-        Animated.timing(sizeAnim, {
-            toValue: {x :newSize, y: newSize},
-             duration: 1000,
-            useNativeDriver: false,
-        }).start()
-        
-    }
+    }, []);
 
+    // Function to dynamically adjust character size based on game progress
+    const changeCharacterSize = (index) => {
+        const original = 180; // Original size
+        const decreased = index * 8; // Decrease factor based on level
+        const newSize = Math.max(original - decreased, 0); // Ensure size does not go negative
+        Animated.timing(sizeAnim, {
+            toValue: { x: newSize, y: newSize },
+            duration: 1000, // Animation lasts 1 second
+            useNativeDriver: false, // Disable native driver for direct manipulation
+        }).start(); // Start the animation
+    };
+
+    // Periodically simulate progress changes with a 1-second interval
     useEffect(() => {
-        // Simulate progress change
         const interval = setInterval(() => {
             setProgress((prevProgress) => {
                 const newProgress = prevProgress + 5;
-                return newProgress > 100 ? 0 : newProgress;
+                return newProgress > 100 ? 0 : newProgress; // Reset after reaching 100
             });
         }, 1000);
-
-        return () => clearInterval(interval);
+        return () => clearInterval(interval); // Clear interval on component unmount
     }, []);
 
+    // Calculate new position for the dog based on current progress
     useEffect(() => {
-        // This function calculates the position based on the progress
         const calculatePosition = (progress) => {
             const index = Math.min(Math.floor(progress / 10), pathPositions.length - 1);
             return pathPositions[index];
         };
 
         const newPosition = calculatePosition(progress);
-        setDogPosition(newPosition);
+        setDogPosition(newPosition); // Update the dog's position state
     }, [progress]);
 
-    
+    // Watch for changes in userDetails to update dog image and animate position
     useEffect(() => {
-        // Make sure `userDetails` is not null or undefined and has the `image_id` property
         if (userDetails?.image_id) {
-          console.log('User details updated', userDetails.image_id);
-          const photoIndex = userDetails.image_id - 1; // Adjust index if necessary
-          if (photoIndex >= 0 && photoIndex < images.dogFullBody.length) {
-            const dogBodyImage = images.dogFullBody[photoIndex];
-            setDogFullBodyImage(dogBodyImage);
-            console.log('Image set to:', dogBodyImage);
-          }
+            const photoIndex = userDetails.image_id - 1; // Adjust index if necessary
+            if (photoIndex >= 0 && photoIndex < images.dogFullBody.length) {
+                const dogBodyImage = images.dogFullBody[photoIndex];
+                setDogFullBodyImage(dogBodyImage); // Set new dog image from array
+            }
         }
-        console.log('current xp,', userDetails.current_level_xp)
-        if (userDetails.current_level_xp > 0){
-            console.log('current xp, MAX XP', userDetails.current_level_xp, userDetails.current_level_max_xp)
-            //const percentage = (userDetails.current_level_xp / userDetails.current_level_max_xp) * 100
-            const percentage = 35
-            console.log('per',percentage)
-            const size = changeCharacterSize(Math.floor(percentage/10))
-            animateDogPosition(percentage)
-            //
-            
-            setDogPosition(getPositionOfDog(0))
-            // // 
-            
-            setImageSize(size)
-            // console.log('dddd',imageSize)
-            // setDogFullBodyLocal({
-            //     source: images.dogFullBody[userDetails.image_id - 1],
-            //     width: size,
-            //     height: size
-            // })
-        } else if (userDetails.current_level_xp === 0){
-            const percentage = 0
-            animateDogPosition(percentage)
-            // const size = changeCharacterSize(percentage)
-            // setDogPosition(getPositionOfDog(percentage))
-            // setImageSize(size)
-        }
+        // Additional code can go here to handle other effects related to userDetails changes
+    }, [userDetails]);
 
-      }, [userDetails]);
-
-      const animateDogPosition = (percentage) => {
-
-        
-
-        let targetIndex = 0
-
-        if (percentage === 0) {
-            index = 0
-        } else if (percentage < 100) {
-            targetIndex = Math.floor((percentage-1)/5) + 1
-            console.log(targetIndex)
-        } else {
-            targetIndex = pathPositions.length - 1
-        }
-        Animated.timing(progressAnim, {
-            toValue: targetIndex,
-            duration:3000,
-            useNativeDriver: false
-        }).start()
-      }
-
-      const dogPositionStyle = {
-        ...styles.dogImage,
+    // Animated styles for the dog based on progress and size animations
+    const dogPositionStyle = {
+        ...styles.dogImage, // Spread in base dog image styles
         left: progressAnim.interpolate({
-            inputRange: pathPositions.map((_, index)=> index),
+            inputRange: pathPositions.map((_, index) => index),
             outputRange: pathPositions.map(pos => pos.x)
         }),
         top: progressAnim.interpolate({
-            inputRange: pathPositions.map((_,index)=>index),
-            outputRange: pathPositions.map(pos=>pos.y)
+            inputRange: pathPositions.map((_, index) => index),
+            outputRange: pathPositions.map(pos => pos.y)
         }),
-        width: sizeAnim.x, 
-        height: sizeAnim.y,
-      }
+        width: sizeAnim.x, // Animated width
+        height: sizeAnim.y, // Animated height
+    };
 
-      
-    
+    // Render the component
     return (
-     
-        <View style ={styles.container}>
-            <StatusBar style="light"/>
+        <View style={styles.container}>
+            <StatusBar style="light" />
             <View style={styles.background}>
-            <Image
-                style={styles.backgroundImage}
-                source={require('../assets/rewards.png')}
-            /></View>
-            {dogPosition && dogFullBody  && (
-            <Animated.Image 
-                style={dogPositionStyle}
-                source={dogFullBody}/>)}
+                <Image
+                    style={styles.backgroundImage}
+                    source={rewardsScreen}
+                />
             </View>
-       
-    )
-                    }
-                
+            {dogPosition && dogFullBody && (
+                <Animated.Image
+                    style={dogPositionStyle}
+                    source={dogFullBody}
+                />
+            )}
+        </View>
+    );
+}
 
+// StyleSheet for the component
 const styles = StyleSheet.create({
-    // Main container
     container: {
-        flex:1, // Take up all of the space
-        backgroundColor: '#FFFFFF' // White
+        flex: 1, // Fill the entire screen
+        backgroundColor: '#FFFFFF' // Background color white
     },
     backgroundImage: {
-        flex: 1, // Take up all of the available space
-        width: '100%',
-        position: 'absolute'
+        flex: 1, // Fill the entire space of its container
+        width: '100%', // Full width
+        position: 'absolute' // Positioned absolutely to allow layering
     },
     dogImage: {
-        position: 'absolute',
-        resizeMode: 'contain'
+        position: 'absolute', // Positioned absolutely to allow precise placement
+        resizeMode: 'contain' // Ensure the image is scaled correctly without distortion
     },
     background: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'center', // Center vertically
+        alignItems: 'center', // Center horizontally
     }
-    
-
-
 });

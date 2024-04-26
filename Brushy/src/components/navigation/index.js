@@ -3,8 +3,7 @@
 import TabNavigation from "./TabNavigation"
 import ParentNav from "./ParentNav";
 
-
 export {
  TabNavigation,
- ParentNav
+ ParentNav,
 };

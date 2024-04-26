@@ -9,6 +9,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
+import { LogBox } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
 import {BlurView} from '@react-native-community/blur';
 import LottieView from 'lottie-react-native';
@@ -28,11 +29,12 @@ BottomChewingLeft,
 BottomChewingRight} from '../../assets/brushes';
 import { startButton, PauseButton, terminateButton, emptyButton, whiteButton } from '../../assets/common';
 
+import Tts from 'react-native-tts';
 
 import Leveling from './LevelUp';
 
 
-export default function CountdownTimer({seconds, startTimer, onModalClose}) {
+export default function CountdownTimer({navigation, seconds, startTimer, onModalClose, name}) {
   const [timer, setTimer] = useState(seconds);
   const [isActive, setIsActive] = useState(false);
   const [rewardUser, setRewardUser] = useState(false);
@@ -45,7 +47,9 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
   const [showTerminateModal, setShowTerminateModal] = useState(false)
   const [showTerminateButton, setShowTerminateButton] = useState(false)
   const backgroundMusicSoundRef = useRef(null);
-
+  const brushingMusicSoundRef = useRef(null);
+  const [startedTimer, setStartedTimer] = useState(false)
+  const [showModalStart, setShowModalStart] = useState(false)
   const brushingImages = {
     topFrontLeft: TopFrontLeft,
     topFront: TopFront,
@@ -67,7 +71,14 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     bottomChewingRight: BottomChewingRight,
 
   };
- 
+  Tts.setDefaultLanguage('en-US');
+  Tts.setDefaultRate(0.45);
+  Tts.setDefaultPitch(1.5);
+  LogBox.ignoreLogs(['new NativeEventEmitter']);
+  Tts.setDefaultVoice('en-GB-language')
+
+
+
   const [where, setWhere] = useState('topFront')
   // Animated values for the brushing motions
   const moveAnim = useRef(new Animated.Value(0)).current;
@@ -136,36 +147,7 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     });
   }
  
-  // if (where === 'topFrontLeft'){
-  //   brushingStyle.transform.push({
-  //     translateX: moveAnim.interpolate({
-  //       inputRange: [0, 1],
-  //       outputRange: [0, 30], // Move the brush image sideways
-  //     }),
-  //   });
-  // }
-
-
-
-  // async function getCurrentSeconds() {
-  //   try {
-  //     const credentials = await secure.get('credentials');
-  //     console.log(credentials.email);
-  //     const response = await api({
-  //       method: 'POST',
-  //       url: '/application/authenticated/',
-  //       data: {
-  //         email: credentials.email,
-  //       },
-  //     });
-  //     setTotalBrushTime(response.data.total_brush_time);
-
-  //     return response.data.total_brush_time;
-  //     // console.log(response.data.total_brush_time)
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+ 
   useEffect(() => {
     if (backgroundMusicSoundRef.current === null) {
       console.log('debug1')
@@ -188,14 +170,43 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     
   }, []);
 
+  useEffect(() => {
+    if (brushingMusicSoundRef.current === null) {
+      console.log('debug1')
+      brushingMusicSoundRef.current = new Sound(brushingTeeth, Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+          console.log('Failed to load the sound', error);
+          return;
+        }
+        brushingMusicSoundRef.current.setVolume(0.5);
+      
+        console.log('Sound loaded and volume set'); 
+      });
+    }
+    brushingMusicSoundRef.current.setVolume(0.5);
+    console.log('debug2')
+    // Cleanup function to release the sound object
+    return () => {
+      brushingMusicSoundRef.current.release();
+      
+    };
+    
+  }, []);
+
 
   const activate = () => {
+    if (startedTimer) {
+    Tts.voices().then(voices => console.log(voices));
+
     setIsActive(!isActive);
     if (isActive) {
       
       console.log('Attempting to pause music');
-      if (backgroundMusicSoundRef.current) {
+      if (backgroundMusicSoundRef.current && brushingMusicSoundRef) {
         backgroundMusicSoundRef.current.pause(() => {
+          console.log('Music is paused');
+        })
+        brushingMusicSoundRef.current.pause(() => {
           console.log('Music is paused');
         })
       };
@@ -205,7 +216,7 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
       startAnimation()
     } else {
       
-      if (backgroundMusicSoundRef.current) {
+      if (backgroundMusicSoundRef.current && brushingMusicSoundRef) {
         backgroundMusicSoundRef.current.play((success) => {
           if (success) {
             console.log('here')
@@ -216,12 +227,31 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
             backgroundMusicSoundRef.current.reset();
           }
         });
+
+        brushingMusicSoundRef.current.play((success) => {
+          if (success) {
+            console.log('here')
+            
+            console.log('Music is playing');
+          } else {
+            console.log('Failed to play music');
+            brushingMusicSoundRef.current.reset();
+          }
+        });
       }
-      backgroundMusicSoundRef.current.setVolume(0.08);
+      brushingMusicSoundRef.current.setNumberOfLoops(-1);
+      backgroundMusicSoundRef.current.setNumberOfLoops(-1)
+      backgroundMusicSoundRef.current.setVolume(0.11);
+      brushingMusicSoundRef.current.setVolume(0.18)
       setShowTerminateButton(true)
       startTimer();
       startAnimation()
     }
+  } else {
+    console.log('modal')
+    setShowModalStart(true)
+    console.log(showModalStart)
+  }
   };
 
   useEffect(() => {
@@ -256,6 +286,30 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
       console.log(error);
     }
   }
+  const startTimerNow = () => {
+    setStartedTimer(true);
+    Tts.speak(`Woof Woof. It's your furry friend ${name} here to help make those teeth shine like my favourite bone!`,  {
+      androidParams: {
+        KEY_PARAM_VOLUME: 1,
+      },
+    });
+    Tts.speak("Aim your brush at your gumline where your teeth are like little stars in the sky. Now, swoosh down from the gum to the tooth tip! Woof woof!",  {
+      androidParams: {
+        KEY_PARAM_VOLUME: 1,
+      },
+    });
+  };
+  
+  
+useEffect(() => {
+  if (startedTimer) {
+    setShowModalStart(false);
+    activate()
+  }
+}, [startedTimer])
+
+ 
+
 
   async function closeModal() {
     setTimer(seconds);
@@ -270,20 +324,31 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
 
     // Should not start the timer if the initial time is 0 seconds
 
-    if (isActive && timer > 0) {
+    if (isActive && timer && startedTimer> 0) {
       setShowLeveling(false);
       timerInterval = setInterval(() => {
         setTimer(prevSeconds => prevSeconds - 1);
       }, 1000);
+      
+    }
+    if (timer === 119 && isActive) {
+      
+      
     }
     
     if (timer === 114 && isActive) {
+      
       setWhere('topFrontLeft')
     }
     if (timer === 107 && isActive) {
       setWhere('topFrontRight')
     }
     if (timer === 100 && isActive) {
+      Tts.speak("Next, dive down to your bottom teeth. Tilt your brush at the bottom gumline and swoosh up to the top of each tooth. Woof woof!",  {
+        androidParams: {
+          KEY_PARAM_VOLUME: 1,
+        },
+      });
       setWhere('bottomFront')
     }
     if (timer === 94 && isActive) {
@@ -294,6 +359,11 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     }
     if (timer === 80 && isActive) {
       setWhere('behindTopFront')
+      Tts.speak("Now, let's find the secret passages behind the top teeth. From the top gumline, make a gentle slide down each tooth. Woof woof!",  {
+        androidParams: {
+          KEY_PARAM_VOLUME: 1,
+        },
+      });
     }
     if (timer === 74 && isActive) {
       setWhere('behindTopLeft')
@@ -303,6 +373,11 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     }
     if (timer === 60 && isActive) {
       setWhere('behindBottomFront')
+      Tts.speak("Time to check the caves behind the bottom teeth! From the bottom gumline, we'll brush up, like a turtle climbing up a hill. Woof woof!",  {
+        androidParams: {
+          KEY_PARAM_VOLUME: 1,
+        },
+      });
     }
     if (timer === 54 && isActive) {
       setWhere('behindBottomLeft')
@@ -312,6 +387,11 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     }
     if (timer === 40 && isActive) {
       setWhere('topChewingFront')
+      Tts.speak("And now, for the chewy tops! Brush them flat, like you're painting your favorite ice cream flavor back and forth. Cover all the spots where your ice cream would melt! WOOF WOOF!",  {
+        androidParams: {
+          KEY_PARAM_VOLUME: 1,
+        },
+      });
     }
     if (timer === 34 && isActive) {
       setWhere('topChewingLeft')
@@ -329,13 +409,26 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
       setWhere('bottomChewingRight')
     }
     if (timer === 0 && isActive) {
+      
       clearInterval(timerInterval);
         setIsActive(false);
-      
+        setStartedTimer(false);
       getBrushTime();
       updateStistics()
       setShouldUpdateLevel(true);
+      Tts.speak("Paws up! You're all done! Your teeth are super-duper clean!. Until next time, woof woof!",  {
+        androidParams: {
+          KEY_PARAM_VOLUME: 1,
+        },
+      });
       setWhere('topFront')
+
+      backgroundMusicSoundRef.current.pause(() => {
+        console.log('Music is paused');
+      })
+      brushingMusicSoundRef.current.pause(() => {
+        console.log('Music is paused');
+      })
     }
     return () => clearInterval(timerInterval);
   }, [isActive, timer, shouldUpdateLevel]);
@@ -381,7 +474,14 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
     setTimer(seconds)
     onModalClose()
     setWhere('topFront')
+    setStartedTimer(false);
     setShowTerminateButton(false)
+    backgroundMusicSoundRef.current.pause(() => {
+      console.log('Music is paused');
+    })
+    brushingMusicSoundRef.current.pause(() => {
+      console.log('Music is paused');
+    })
   }
 
   const cancelTerminate = () => {
@@ -526,6 +626,9 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
             style={[styles.buttonImage,{marginLeft:120}]}/>
             </TouchableOpacity>
 
+           
+
+
             <Modal  
             visible={showTerminateModal}
             transparent={true}
@@ -553,6 +656,8 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
 
         </View>
             </Modal>
+            
+
             
             
             </>
@@ -593,6 +698,39 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
         : null}
         
       </View>
+
+      <Modal  
+            visible={showModalStart}
+            transparent={true}
+            animationType='slide'
+            onRequestClose={() => setShowModalStart(false)}>
+            <BlurView
+          style={StyleSheet.absoluteFill}
+          blurType="light"
+          blurAmount={10}
+          reducedTransparencyFallbackColor="white"
+        />
+
+        <View style={styles.container}>
+          <View style={styles.modalView}>
+            <Text style={styles.infoText}>Are you ready to start your session? </Text>
+            <View style={styles.modalButton}>
+            
+            <TouchableOpacity style={styles.button} onPress={() => startTimerNow()}>
+              
+                <Text style={styles.buttonText}>Yes!</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => setShowModalStart(false)}>
+                <Text style={styles.buttonText}>Not yet.</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </View>
+            </Modal>
+
+
+
       <Modal
         style={{flex: 1, marginTop: '20%', justifyContent: 'center'}}
         animationType="slide"
@@ -618,12 +756,7 @@ export default function CountdownTimer({seconds, startTimer, onModalClose}) {
               <Text>Congratulations!</Text>
             </>
           ) : null}
-          {requestComplete ? (
-           
-            <Text>{totalBrushTime} seconds</Text>
-          ) : (
-            <Text>Loading</Text>
-          )}
+          
           <CustomButton title="close" onPress={closeModal} />
         </View>
       </Modal>

@@ -1,3 +1,19 @@
 // Re-export visuals to import more conveniently from this folder
 export const TopFrontLeft = require('./TopFrontLeft.png');
-export const TopFrontRight = require('./TopFrontRight.png')
+export const TopFront = require('./TopFrontRight.png')
+export const TopFrontRight = require('./TopFrontRightSide.png')
+export const BottomFront = require('./BottomFront.png');
+export const BottomLeft = require('./BottomLeft.png');
+export const BottomRight = require('./BottomRight.png');
+export const BehindTopFront = require('./BehindTopFront.png');
+export const BehindTopLeft= require('./BehindTopLeft.png');
+export const BehindTopRight= require('./BehindTopRight.png');
+export const BehindBottomFront = require('./BehindBottomFront.png');
+export const BehindBottomLeft = require('./BehindBottomLeft.png');
+export const BehindBottomRight = require('./BehindBottomRight.png');
+export const TopChewingFront = require('./TopChewingFront.png');
+export const TopChewingLeft = require('./TopChewingLeft.png');
+export const TopChewingRight = require('./TopChewingRight.png');
+export const BottomChewingFront = require('./BottomChewingFront.png');
+export const BottomChewingLeft = require('./BottomChewingLeft.png');
+export const BottomChewingRight = require('./BottomChewingRight.png');
